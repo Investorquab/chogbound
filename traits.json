@@ -1,0 +1,1242 @@
+{
+  "1": {
+    "name": "CHOG #1462",
+    "image": "art/1.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Deep Aqua"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Pink"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Left"
+      },
+      {
+        "trait_type": "Body",
+        "value": "Yellow 143 Jersey"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "Flat"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "BTC Glass"
+      },
+      {
+        "trait_type": "Head",
+        "value": "MCGA"
+      },
+      {
+        "trait_type": "Accessory",
+        "value": "Fwog"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Uncommon"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "24": {
+    "name": "CHOG #1485",
+    "image": "art/24.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Fresh Green"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Pink"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Right"
+      },
+      {
+        "trait_type": "Body",
+        "value": "Cream Tuxedo"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "Lip Bite"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "Round Eye"
+      },
+      {
+        "trait_type": "Head",
+        "value": "TISM Cap"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Common"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "42": {
+    "name": "CHOG #1503",
+    "image": "art/42.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Deep Aqua"
+      },
+      {
+        "trait_type": "Aura",
+        "value": "Smoke"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Pink"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Left"
+      },
+      {
+        "trait_type": "Body",
+        "value": "dark jacket"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "BTC Coin"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "Base"
+      },
+      {
+        "trait_type": "Head",
+        "value": "Plumber"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Uncommon"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "71": {
+    "name": "CHOG #1532",
+    "image": "art/71.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Soft Lavender"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Right"
+      },
+      {
+        "trait_type": "Body",
+        "value": "Pink Tuxedo"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "Drooling"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "Round Tear"
+      },
+      {
+        "trait_type": "Head",
+        "value": "Blue Bucket Cap"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Common"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "89": {
+    "name": "CHOG #1550",
+    "image": "art/89.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Coral Pink"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Right"
+      },
+      {
+        "trait_type": "Body",
+        "value": "Squid Game Guard"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "Sad"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "Dead"
+      },
+      {
+        "trait_type": "Head",
+        "value": "Red Headband"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Common"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "118": {
+    "name": "CHOG #1579",
+    "image": "art/118.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Aqua"
+      },
+      {
+        "trait_type": "Aura",
+        "value": "Aqua Aura"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Left"
+      },
+      {
+        "trait_type": "Body",
+        "value": "dark vest"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "Sad"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "Vertical"
+      },
+      {
+        "trait_type": "Head",
+        "value": "BTC Cap"
+      },
+      {
+        "trait_type": "Accessory",
+        "value": "Green Candle"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Uncommon"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "150": {
+    "name": "CHOG #1611",
+    "image": "art/150.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Sky Blue"
+      },
+      {
+        "trait_type": "Aura",
+        "value": "Mint"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Yellow"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Right"
+      },
+      {
+        "trait_type": "Body",
+        "value": "Yellow Yukata"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "Happy"
+      },
+      {
+        "trait_type": "Head",
+        "value": "Robber"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Common"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "222": {
+    "name": "CHOG #1683",
+    "image": "art/222.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Sky Blue"
+      },
+      {
+        "trait_type": "Aura",
+        "value": "Light Purple"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Right"
+      },
+      {
+        "trait_type": "Body",
+        "value": "Dragon suit"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "normal smile"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "Heart"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Common"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "300": {
+    "name": "CHOG #1761",
+    "image": "art/300.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Deep Aqua"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Pink"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Left"
+      },
+      {
+        "trait_type": "Body",
+        "value": "dark tee"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "Grit"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "fire laser"
+      },
+      {
+        "trait_type": "Head",
+        "value": "Mon Cap"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Uncommon"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "410": {
+    "name": "CHOG #1871",
+    "image": "art/410.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Light Purple"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Left"
+      },
+      {
+        "trait_type": "Body",
+        "value": "pink vest"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "Mon coin"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "3D Glass"
+      },
+      {
+        "trait_type": "Head",
+        "value": "RETARD Cap"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Uncommon"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "555": {
+    "name": "CHOG #47",
+    "image": "art/555.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Coral Pink"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Pink"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Right"
+      },
+      {
+        "trait_type": "Body",
+        "value": "Jesus"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "Lip Bite"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "Side Eye"
+      },
+      {
+        "trait_type": "Head",
+        "value": "TISM Cap"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Common"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "640": {
+    "name": "CHOG #132",
+    "image": "art/640.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Light Purple"
+      },
+      {
+        "trait_type": "Aura",
+        "value": "Wind"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Pink"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Left"
+      },
+      {
+        "trait_type": "Body",
+        "value": "Red Sleeveless"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "Bubblegum"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "Thug"
+      },
+      {
+        "trait_type": "Head",
+        "value": "Rainbow Wig"
+      },
+      {
+        "trait_type": "Accessory",
+        "value": "Green Candle"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Uncommon"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "777": {
+    "name": "CHOG #269",
+    "image": "art/777.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Aqua"
+      },
+      {
+        "trait_type": "Aura",
+        "value": "Fire"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Red"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Right"
+      },
+      {
+        "trait_type": "Body",
+        "value": "Banana suit"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "Smile"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "Green laser"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Common"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "888": {
+    "name": "CHOG #380",
+    "image": "art/888.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Rosie"
+      },
+      {
+        "trait_type": "Aura",
+        "value": "Burning Aura"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Pink"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Left"
+      },
+      {
+        "trait_type": "Body",
+        "value": "Red jacket"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "Mon coin"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "MOG"
+      },
+      {
+        "trait_type": "Head",
+        "value": "Plumber"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Uncommon"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "999": {
+    "name": "CHOG #491",
+    "image": "art/999.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Light Purple"
+      },
+      {
+        "trait_type": "Aura",
+        "value": "Smoke"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Pink"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Left"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "Drooling"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "Modern VR"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Uncommon"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "Yes"
+      }
+    ]
+  },
+  "1111": {
+    "name": "CHOG #603",
+    "image": "art/1111.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Mint"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Right"
+      },
+      {
+        "trait_type": "Body",
+        "value": "Black Trackset"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "Gold Tooth"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "Anime Glass"
+      },
+      {
+        "trait_type": "Head",
+        "value": "Dollar Cap"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Common"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "1234": {
+    "name": "CHOG #726",
+    "image": "art/1234.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Lemon"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Left"
+      },
+      {
+        "trait_type": "Body",
+        "value": "purple vest"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "Sad"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "Retard"
+      },
+      {
+        "trait_type": "Head",
+        "value": "MCGA Cap"
+      },
+      {
+        "trait_type": "Accessory",
+        "value": "SB"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Uncommon"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "1357": {
+    "name": "CHOG #849",
+    "image": "art/1357.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Mint"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Pink"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Left"
+      },
+      {
+        "trait_type": "Body",
+        "value": "Brown Homeless Shirt"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "Bubblegum"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "XD"
+      },
+      {
+        "trait_type": "Head",
+        "value": "JEET Cap"
+      },
+      {
+        "trait_type": "Accessory",
+        "value": "SB"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Uncommon"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "1500": {
+    "name": "CHOG #992",
+    "image": "art/1500.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Rosy Pink"
+      },
+      {
+        "trait_type": "Aura",
+        "value": "Wind"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Left"
+      },
+      {
+        "trait_type": "Body",
+        "value": "Blue 143 Jersey"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "Clown Mouth"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "cyan laser"
+      },
+      {
+        "trait_type": "Head",
+        "value": "Mon Cap"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Uncommon"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "1620": {
+    "name": "CHOG #1112",
+    "image": "art/1620.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Light Purple"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Red"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Right"
+      },
+      {
+        "trait_type": "Body",
+        "value": "Black Trackset"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "wo"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "Dead"
+      },
+      {
+        "trait_type": "Head",
+        "value": "Gray Bucket Cap"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Common"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "1750": {
+    "name": "CHOG #1242",
+    "image": "art/1750.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Sunlight"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Red"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Right"
+      },
+      {
+        "trait_type": "Body",
+        "value": "Astro Suit"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "Sad"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "Purple laser"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Common"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "1830": {
+    "name": "CHOG #1322",
+    "image": "art/1830.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Aqua"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Black"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Right"
+      },
+      {
+        "trait_type": "Body",
+        "value": "Hawaiian Polo"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "wo"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "Anime Glass"
+      },
+      {
+        "trait_type": "Head",
+        "value": "Durag"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Common"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "1900": {
+    "name": "CHOG #1392",
+    "image": "art/1900.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Sunlight"
+      },
+      {
+        "trait_type": "Aura",
+        "value": "Burning Aura"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Pink"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Left"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "Drooling"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "Vertical"
+      },
+      {
+        "trait_type": "Head",
+        "value": "BTC Beanie"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Uncommon"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  },
+  "1969": {
+    "name": "CHOG #1461",
+    "image": "art/1969.webp",
+    "attributes": [
+      {
+        "trait_type": "Background",
+        "value": "Deep Blue"
+      },
+      {
+        "trait_type": "Aura",
+        "value": "Smoke"
+      },
+      {
+        "trait_type": "Base",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Skin",
+        "value": "Origin"
+      },
+      {
+        "trait_type": "Side",
+        "value": "Left"
+      },
+      {
+        "trait_type": "Body",
+        "value": "dark jacket"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "Bubblegum"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "Smirk"
+      },
+      {
+        "trait_type": "Head",
+        "value": "Chog Cap"
+      },
+      {
+        "trait_type": "Accessory",
+        "value": "Coin"
+      },
+      {
+        "trait_type": "Form",
+        "value": "Chog"
+      },
+      {
+        "trait_type": "Tier",
+        "value": "Uncommon"
+      },
+      {
+        "trait_type": "Naked",
+        "value": "No"
+      }
+    ]
+  }
+}

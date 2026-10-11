@@ -1,0 +1,136 @@
+{
+  "Background": {
+    "Deep Aqua": 3,
+    "Fresh Green": 1,
+    "Soft Lavender": 1,
+    "Coral Pink": 2,
+    "Aqua": 3,
+    "Sky Blue": 2,
+    "Light Purple": 4,
+    "Rosie": 1,
+    "Mint": 2,
+    "Lemon": 1,
+    "Rosy Pink": 1,
+    "Sunlight": 2,
+    "Deep Blue": 1
+  },
+  "Base": {
+    "Origin": 24
+  },
+  "Skin": {
+    "Pink": 10,
+    "Origin": 9,
+    "Yellow": 1,
+    "Red": 3,
+    "Black": 1
+  },
+  "Side": {
+    "Left": 13,
+    "Right": 11
+  },
+  "Body": {
+    "Yellow 143 Jersey": 1,
+    "Cream Tuxedo": 1,
+    "dark jacket": 2,
+    "Pink Tuxedo": 1,
+    "Squid Game Guard": 1,
+    "dark vest": 1,
+    "Yellow Yukata": 1,
+    "Dragon suit": 1,
+    "dark tee": 1,
+    "pink vest": 1,
+    "Jesus": 1,
+    "Red Sleeveless": 1,
+    "Banana suit": 1,
+    "Red jacket": 1,
+    "Black Trackset": 2,
+    "purple vest": 1,
+    "Brown Homeless Shirt": 1,
+    "Blue 143 Jersey": 1,
+    "Astro Suit": 1,
+    "Hawaiian Polo": 1
+  },
+  "Mouth": {
+    "Flat": 1,
+    "Lip Bite": 2,
+    "BTC Coin": 1,
+    "Drooling": 3,
+    "Sad": 4,
+    "normal smile": 1,
+    "Grit": 1,
+    "Mon coin": 2,
+    "Bubblegum": 3,
+    "Smile": 1,
+    "Gold Tooth": 1,
+    "Clown Mouth": 1,
+    "wo": 2
+  },
+  "Eyes": {
+    "BTC Glass": 1,
+    "Round Eye": 1,
+    "Base": 1,
+    "Round Tear": 1,
+    "Dead": 2,
+    "Vertical": 2,
+    "Happy": 1,
+    "Heart": 1,
+    "fire laser": 1,
+    "3D Glass": 1,
+    "Side Eye": 1,
+    "Thug": 1,
+    "Green laser": 1,
+    "MOG": 1,
+    "Modern VR": 1,
+    "Anime Glass": 2,
+    "Retard": 1,
+    "XD": 1,
+    "cyan laser": 1,
+    "Purple laser": 1,
+    "Smirk": 1
+  },
+  "Head": {
+    "MCGA": 1,
+    "TISM Cap": 2,
+    "Plumber": 2,
+    "Blue Bucket Cap": 1,
+    "Red Headband": 1,
+    "BTC Cap": 1,
+    "Robber": 1,
+    "Mon Cap": 2,
+    "RETARD Cap": 1,
+    "Rainbow Wig": 1,
+    "Dollar Cap": 1,
+    "MCGA Cap": 1,
+    "JEET Cap": 1,
+    "Gray Bucket Cap": 1,
+    "Durag": 1,
+    "BTC Beanie": 1,
+    "Chog Cap": 1
+  },
+  "Accessory": {
+    "Fwog": 1,
+    "Green Candle": 2,
+    "SB": 2,
+    "Coin": 1
+  },
+  "Form": {
+    "Chog": 24
+  },
+  "Tier": {
+    "Uncommon": 13,
+    "Common": 11
+  },
+  "Naked": {
+    "No": 23,
+    "Yes": 1
+  },
+  "Aura": {
+    "Smoke": 3,
+    "Aqua Aura": 1,
+    "Mint": 1,
+    "Light Purple": 1,
+    "Wind": 2,
+    "Fire": 1,
+    "Burning Aura": 2
+  }
+}
