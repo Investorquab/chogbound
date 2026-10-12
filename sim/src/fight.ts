@@ -1,9 +1,10 @@
 import { createRng, normalizeSeed } from './rng.js';
+import { CRIT_CHANCE_BASE, CRIT_CHANCE_SLOPE, CRIT_MULTIPLIER, DAMAGE_COEFFICIENT, GUARD_MAX, GUARD_MIN, GUARD_SLOPE, HIT_CHANCE_BASE, HIT_CHANCE_MAX, HIT_CHANCE_MIN, HIT_CHANCE_SLOPE, MOVE_MULTIPLIERS } from './balance.config.js';
 import type { AccessoryClass, CoreMove, FightEvent, Fighter, Move, Plan, Side, SimResult, SignatureMove, Stats } from './types.js';
 
 const CORE: CoreMove[] = ['Headbutt', 'Quick Feet', 'Iron Hide'];
 const MOVE_STAT: Record<CoreMove, keyof Stats> = { Headbutt: 'PUNCH', 'Quick Feet': 'SWIFT', 'Iron Hide': 'GRIT' };
-const MULTIPLIER: Record<CoreMove | SignatureMove, number> = { Headbutt: 1.15, 'Quick Feet': 0.95, 'Iron Hide': 0.85, 'Laser Stare': 1.3, Scan: 1, Charm: 1, 'Stare Down': 1, 'Chaos Gaze': 1.8 };
+const MULTIPLIER: Record<CoreMove | SignatureMove, number> = { ...MOVE_MULTIPLIERS, Scan: 1, Charm: 1, 'Stare Down': 1 };
 const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
 const roundDamage = (n: number) => Math.max(1, Math.round(n));
 type State = { fighter: Fighter; plan: Plan; hp: number; baseTotal: number; activeSignature: SignatureMove | null; stats: Stats; firstIncomingDodged: boolean; luckyFlipUsed: boolean; laserAutoUsed: boolean; pumpUsed: boolean; scorchTriggered: boolean; scorchRounds: number[]; glowUsed: boolean; ironGuard: number; hitTaken: boolean; coolBonusPending: boolean; coolBonusUsed: boolean; firstAttackDone: boolean; firstCounterDone: boolean; laserDodgeIgnoreUsed: boolean; sidekickUsedRound: number; }; 
@@ -26,10 +27,12 @@ export function simulate(fighterA: Fighter, fighterB: Fighter, planA: Plan, plan
   };
   const activeStats = (state: State, round: number) => ({ ...state.stats, SWIFT: state.stats.SWIFT + (state.fighter.aura === 'gust' && round === 1 ? 8 : 0), NERVE: state.stats.NERVE - (state === a && b.activeSignature === 'Charm' || state === b && a.activeSignature === 'Charm' ? (round <= 3 ? 8 : 0) : 0), PUNCH: state.stats.PUNCH + (state.fighter.voiceClass === 'gloom' && state.hp < (state === a ? b.hp : a.hp) ? 6 : 0) });
   const chooseMove = (state: State): CoreMove | SignatureMove => {
+    // Laser Stare is the opening action for its owner, then its go-to move is Headbutt.
+    if (state.activeSignature === 'Laser Stare' && !state.laserAutoUsed) return 'Laser Stare';
     if (state.plan.temperament === 'Wild') return CORE[rng.int(CORE.length)];
     if (state.activeSignature) {
-      if (rng.chance(0.6)) return state.activeSignature === 'Laser Stare' || state.activeSignature === 'Chaos Gaze' ? state.activeSignature : 'Headbutt';
-      const choices = state.activeSignature === 'Laser Stare' || state.activeSignature === 'Chaos Gaze' ? CORE : CORE.filter(m => m !== 'Headbutt');
+      if (rng.chance(0.6)) return state.activeSignature === 'Chaos Gaze' ? state.activeSignature : 'Headbutt';
+      const choices = state.activeSignature === 'Chaos Gaze' ? CORE : CORE.filter(m => m !== 'Headbutt');
       return choices[rng.int(choices.length)];
     }
     if (CORE.includes(state.plan.move as CoreMove) && rng.chance(0.6)) return state.plan.move as CoreMove;
@@ -40,7 +43,7 @@ export function simulate(fighterA: Fighter, fighterB: Fighter, planA: Plan, plan
     if (finished) return;
     const procs: string[] = []; const attackerStats = activeStats(attacker, round); const defenderStats = activeStats(defender, round);
     if (attacker.fighter.voiceClass === 'gloom' && attacker.hp < defender.hp) procs.push('underdog-pride');
-    let hitChance = clamp(0.85 + 0.004 * (attackerStats.SWIFT - defenderStats.SWIFT), 0.60, 0.95);
+    let hitChance = clamp(HIT_CHANCE_BASE + HIT_CHANCE_SLOPE * (attackerStats.SWIFT - defenderStats.SWIFT), HIT_CHANCE_MIN, HIT_CHANCE_MAX);
     if (defender.activeSignature === 'Stare Down' && !attacker.firstAttackDone) { hitChance -= 0.15; procs.push('stare-down'); }
     if (attacker.plan.temperament === 'Feisty' && round <= 3) procs.push('feisty');
     if (attacker.plan.temperament === 'Feisty' && round >= 6) procs.push('feisty-fatigue');
@@ -50,27 +53,27 @@ export function simulate(fighterA: Fighter, fighterB: Fighter, planA: Plan, plan
     const scanCounter = !isSidekick && attacker.activeSignature === 'Scan' && attacker.hitTaken && !attacker.firstCounterDone;
     if (scanCounter) { attacker.firstCounterDone = true; procs.push('scan-counter'); }
     if (move === 'Iron Hide' && !isSidekick) { attacker.ironGuard = Math.max(attacker.ironGuard, 1); procs.push('iron-hide-guard'); }
-    let hit = isSidekick || (move === 'Laser Stare' && !attacker.laserAutoUsed) || rng.chance(clamp(hitChance, 0.45, 0.95));
+    let hit = isSidekick || (move === 'Laser Stare' && !attacker.laserAutoUsed) || rng.chance(hitChance);
     if (move === 'Laser Stare' && !attacker.laserAutoUsed) { attacker.laserAutoUsed = true; procs.push('laser-auto-hit'); hit = true; }
     if (!isSidekick && defender.fighter.aura === 'vanish' && !defender.firstIncomingDodged) {
       if (move === 'Laser Stare' && !attacker.laserDodgeIgnoreUsed) { defender.firstIncomingDodged = true; attacker.laserDodgeIgnoreUsed = true; procs.push('laser-ignores-vanish'); }
       else { defender.firstIncomingDodged = true; hit = false; procs.push('vanish'); event(round, actor, 'attack', actualMove, 'dodge', 0, 0, procs, 'attack.dodge', {}); attacker.firstAttackDone = true; return; }
     }
-    if (!hit && attacker.fighter.accessory === 'lucky-flip' && !attacker.luckyFlipUsed) { attacker.luckyFlipUsed = true; procs.push('lucky-flip'); hit = rng.chance(clamp(hitChance, 0.45, 0.95)); }
-    if (move === 'Chaos Gaze') { const chaosHit = rng.chance(0.5); hit = chaosHit; multiplier = 1.8; procs.push(chaosHit ? 'chaos-gaze-boost' : 'chaos-gaze-miss'); }
+    if (!hit && attacker.fighter.accessory === 'lucky-flip' && !attacker.luckyFlipUsed) { attacker.luckyFlipUsed = true; procs.push('lucky-flip'); hit = rng.chance(hitChance); }
+    if (move === 'Chaos Gaze') { const chaosHit = rng.chance(0.5); hit = chaosHit; multiplier = MOVE_MULTIPLIERS['Chaos Gaze']; procs.push(chaosHit ? 'chaos-gaze-boost' : 'chaos-gaze-miss'); }
     attacker.firstAttackDone = true;
     if (!hit) { event(round, actor, 'attack', actualMove, 'miss', 0, 0, procs, 'attack.miss', { attacker: attacker.fighter.name, target: defender.fighter.name }); return; }
     const statName = isSidekick ? 'PUNCH' : MOVE_STAT[move as CoreMove] ?? 'PUNCH'; let attackStat = attackerStats[statName];
     if (move === 'Scan' && attacker.activeSignature === 'Scan') { /* Scan is an opening reveal, not an attack. */ attackStat = attackerStats.PUNCH; }
     if (coolCounter) attackStat *= 1.1;
     let variance = (rng.next() * 2 - 1) * ({ Safe: 0.05, Even: 0.15, Gamble: 0.30 } as const)[attacker.plan.risk];
-    let critChance = 0.05 + 0.004 * (attackerStats.NERVE - 40) + (attacker.plan.risk === 'Gamble' ? 0.10 : 0) + (attacker.plan.temperament === 'Wild' ? 0.15 : 0);
-    const crit = rng.chance(clamp(critChance, 0, 0.95));
-    let guard = clamp(0.006 * (defenderStats.GRIT - 40), -0.10, 0.20); if (defender.ironGuard > 0) { guard = 1 - (1 - guard) * 0.8; defender.ironGuard--; procs.push('iron-hide'); }
+    let critChance = CRIT_CHANCE_BASE + CRIT_CHANCE_SLOPE * (attackerStats.NERVE - 40) + (attacker.plan.risk === 'Gamble' ? 0.10 : 0) + (attacker.plan.temperament === 'Wild' ? 0.15 : 0);
+    const crit = rng.chance(critChance);
+    let guard = clamp(GUARD_SLOPE * (defenderStats.GRIT - 40), GUARD_MIN, GUARD_MAX); if (defender.ironGuard > 0) { guard = 1 - (1 - guard) * 0.8; defender.ironGuard--; procs.push('iron-hide'); }
     let damageFactor = 1; if (attacker.plan.temperament === 'Feisty') damageFactor *= round <= 3 ? 1.1 : round >= 6 ? 0.9 : 1;
     if (defender.plan.temperament === 'Cool' && round <= 3) damageFactor *= 0.9;
     if (scanCounter) damageFactor *= 1.25;
-    const raw = attackStat * 0.18 * multiplier * (1 + variance) * (1 - guard) * (crit ? 1.5 : 1) * damageFactor;
+    const raw = attackStat * DAMAGE_COEFFICIENT * multiplier * (1 + variance) * (1 - guard) * (crit ? CRIT_MULTIPLIER : 1) * damageFactor;
     const damage = roundDamage(raw); if (crit) procs.push('crit');
     const dealt = Math.min(defender.hp, damage); defender.hp -= dealt;
     event(round, actor, 'attack', actualMove, crit ? 'crit' : 'hit', dealt, 0, procs, crit ? 'attack.crit' : `hit.${String(actualMove).toLowerCase().replaceAll(' ','-')}`, { damage: dealt, target_hp: defender.hp, attacker: attacker.fighter.name, target: defender.fighter.name });

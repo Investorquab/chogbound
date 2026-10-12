@@ -1,23 +1,19 @@
-# ChogBound simulation engine — validation report
+# ChogBound simulation engine v1.1 — validation report
 
-## Automated checks executed in the build environment
+## Environment
 
-- Strict TypeScript compilation of `src/*.ts`: **PASS**.
-- Strict type-check of `src`, `test`, and `scripts`: **PASS** using temporary ambient declarations for unavailable Node/Vitest type packages.
-- Stats tests: **5 passed**.
-- Fight tests: **8 passed**.
-- Determinism: same inputs and seed were byte-identical over 1,000 reruns; the normalized summary seed also reproduced the same result.
-- Section 7 HP accounting and bounds: **10,000 seeded fights, 0 invariant failures** across a roster with signatures, auras, and accessories.
-- Once-only proc checks in those 10,000 fights: **0 duplicate-proc failures** for the tracked one-time effects.
-- Narration numeric-source check: **PASS**.
-- Section 10.4 swap test: **PASS**.
-- Section 10.5 fixed-pair temperament spread: **10.1 percentage points**, exceeding the 2-point target for the selected pair.
-- Section 10.3 balance run: **27,600 fights**; see the table and target status in `README.md`.
+The source repository was read from `main` at commit `61105985da6c9ae66a0e09cf5d06b117b7bef86d`. Shell access to GitHub and npm was blocked by DNS resolution. The local 24-token balance run used the checked-in sample converted into root `traits.json` object shape; see `../results-summary.md` for this limitation.
 
-## Tooling limitation
+## Checks that ran
 
-The environment could not reach the npm registry (`npm install` timed out), so the official Vitest CLI could not be installed or run. The test files were compiled and executed with a temporary local compatibility harness implementing the assertions used by this suite; that harness was not included in the ZIP. Run `npm install && npm test` in a network-enabled Node 18+ environment for the official Vitest run.
+- TypeScript source, tests, and scripts compile-only check: **PASS** with global TypeScript and a temporary ambient declaration for Vitest.
+- 10,000 random-plan fights for Laser Stare uniqueness: **0 repeated uses** by any fighter.
+- 10,000 random-plan fights for event HP accounting and bounds: **0 failures**.
+- Stat parity, 6,000 seeds per stat: GRIT +10 **63.52%**, PUNCH +10 **59.75%**, SWIFT +10 **63.85%**, NERVE +10 **64.40%**. All four are within 58–67%.
+- Coverage: **24 tokens processed**, zero values routed to an Unknown/neutral fallback.
+- Full-balance smoke test, N=200: KO rate **13.00%**, sampled win-rate range **18.75%–77.78%**.
+- 100-seed all-pairs balance: **27,600 fights**, min/max **37.17% / 67.04%**, population standard deviation **8.82**, one token outside 35–65% (1969), KO rate **18.69%**, lower-total wins **43.47%**. This does **not** exactly match the recorded v1.1 aggregate table; constants were not tuned.
 
-## Balance conclusion
+## Official Vitest status
 
-Baseline v1 **does not meet all balance targets**: lower-total win rate is in range, but KO rate is too low and six sampled tokens fall outside the 35–65% per-token range. A separate, temporary number-only sensitivity run using damage coefficient 0.22 reached a 10.34% KO rate and 43.39% lower-total win rate, but still had per-token outliers. The checked-in rules remain unchanged at the specified 0.18 damage coefficient.
+**NOT RUN.** `npm install && npm test` timed out. A retry of `npm install` failed with `EAI_AGAIN` while resolving `registry.npmjs.org`. Do not treat compile-only/custom checks as a Vitest pass.

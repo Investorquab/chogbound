@@ -3,12 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=18" },
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
     "balance": "tsx scripts/balance.ts",
-    "typecheck": "tsc --noEmit"
+    "coverage": "tsx scripts/coverage.ts",
+    "balance:full": "tsx scripts/balance-full.ts"
   },
   "devDependencies": {
     "@types/node": "^20.17.0",

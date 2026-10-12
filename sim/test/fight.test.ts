@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { simulate } from '../src/fight.js';
 import { renderNarration } from '../src/narration.js';
 import { computeStats } from '../src/stats.js';
+import { createRng } from '../src/rng.js';
 import type { Fighter, Plan, TraitAttribute } from '../src/types.js';
 const attrs=(values:Record<string,string>):TraitAttribute[]=>Object.entries(values).map(([trait_type,value])=>({trait_type,value}));
 function fighter(id:string,values:Record<string,string>={}):Fighter {
@@ -56,6 +57,45 @@ describe('fight engine',()=>{
   const other=fighter('other',{Body:'Cream Tuxedo',Eyes:'fire laser',Mouth:'Grit',Tier:'Common'});
   expect(JSON.stringify(simulate(other,b,plan(),plan(),777))).not.toBe(first);
  });
+
+ it('never performs Laser Stare more than once in any of 10,000 random-plan fights',()=>{
+  const roster=[
+   fighter('laser-a',{Eyes:'fire laser'}), fighter('laser-b',{Eyes:'Green laser'}),
+   fighter('scan',{Eyes:'BTC Glass'}), fighter('plain',{Eyes:'Base'}),
+   fighter('charm',{Eyes:'Heart'}), fighter('chaos',{Eyes:'Retard'}),
+  ];
+  const temps=['Feisty','Cool','Wild'] as const, risks=['Safe','Even','Gamble'] as const;
+  for(let i=0;i<10000;i++){
+   const rng=createRng(`laser-once:${i}`);
+   const fa=roster[rng.int(roster.length)], fb=roster[rng.int(roster.length)];
+   const randomPlan=(f:Fighter):Plan=>{
+    const moves:Plan['move'][]=[...(['Headbutt','Quick Feet','Iron Hide'] as const),...(f.signature?[f.signature]:[])];
+    return {temperament:temps[rng.int(temps.length)],move:moves[rng.int(moves.length)],risk:risks[rng.int(risks.length)]};
+   };
+   const result=simulate(fa,fb,randomPlan(fa),randomPlan(fb),`laser-fight:${i}`);
+   for(const side of ['a','b'] as const){
+    expect(result.events.filter(e=>e.actor===side&&e.move==='Laser Stare').length).toBeLessThanOrEqual(1);
+   }
+  }
+ });
+ it('keeps +10 in each individual stat within the v1.1 parity band over 6,000 random-plan seeds',()=>{
+  const baseline:Fighter={tokenId:'baseline',name:'All 40',stats:{GRIT:40,PUNCH:40,SWIFT:40,NERVE:40},voiceClass:'neutral',aura:'none',accessory:'none',signature:null,tier:'Common'};
+  const stats=['GRIT','PUNCH','SWIFT','NERVE'] as const;
+  const temps=['Feisty','Cool','Wild'] as const, risks=['Safe','Even','Gamble'] as const;
+  const randomPlan=(seed:string):Plan=>{const rng=createRng(seed);const moves=['Headbutt','Quick Feet','Iron Hide'] as const;return {temperament:temps[rng.int(temps.length)],move:moves[rng.int(moves.length)],risk:risks[rng.int(risks.length)]};};
+  for(const stat of stats){
+   const boosted:Fighter={...baseline,tokenId:`plus-${stat}`,name:`+10 ${stat}`,stats:{...baseline.stats,[stat]:50}};
+   let wins=0;
+   for(let seed=0;seed<6000;seed++){
+    const result=simulate(boosted,baseline,randomPlan(`parity:${stat}:a:${seed}`),randomPlan(`parity:${stat}:b:${seed}`),`parity-fight:${stat}:${seed}`);
+    if(result.summary.winner==='a')wins++;
+   }
+   const rate=wins/6000;
+   expect(rate,`${stat} +10 win rate ${(rate*100).toFixed(2)}%`).toBeGreaterThanOrEqual(0.58);
+   expect(rate,`${stat} +10 win rate ${(rate*100).toFixed(2)}%`).toBeLessThanOrEqual(0.67);
+  }
+ });
+
  it('rejects a signature plan that does not belong to the fighter',()=>{
   expect(()=>simulate(a,b,plan({move:'Laser Stare'}),plan(),13)).toThrow();
  });
