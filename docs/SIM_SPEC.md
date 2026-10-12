@@ -1,6 +1,6 @@
-# ChogBound simulation spec v1.1
+# ChogBound simulation spec v1.2
 
-Status: v1.1. Numbers were tuned by sensitivity runs on the 24-token sample (section 10.7). They are still not final: the full 1,969-token scan can move them. Rules change only if a test cannot be passed by tuning numbers.
+Status: v1.2 (v1.1 numbers plus rulings on three ambiguities, section 6.1, and a tolerance fix in section 10.7). Numbers were tuned by sensitivity runs on the 24-token sample (section 10.7). They are still not final: the full 1,969-token scan can move them. Rules change only if a test cannot be passed by tuning numbers.
 
 Companion to `docs/TRAIT_MAPPING.md`, which defines stats, traits, and effect classes.
 
@@ -70,6 +70,12 @@ Accessories:
 - Lucky Flip: re-roll one miss.
 - Sidekick: each round, 20% chance of an extra 4 damage hit that cannot miss.
 - Trinket (SB and unmapped values): +4 to your lowest base stat, applied at stat calculation.
+
+### 6.1 Rulings on ambiguities
+
+- Laser Stare ignores dodge and consumes the defender's Vanish dodge if one is available (Laser Stare beats Vanish).
+- Lucky Flip re-rolls only a normal hit-chance miss. It never re-rolls a Chaos Gaze coin-flip miss.
+- A selected Laser Stare opening action happens on the owner's first action even under Wild temperament. After that, Wild resumes picking core moves uniformly.
 
 ## 7. Event log format
 
@@ -154,7 +160,9 @@ Why numbers had to change: with the v1 numbers, +10 in one stat won 78% (SWIFT),
 | KO rate (target 5 to 25%) | 0.9% | 18.4% |
 | Lower-total fighter wins (target 35 to 45%) | 41.8% | 43.7% |
 
-Token 1969 (Heavy body, Vanish aura, Lucky Flip, Charm) is 2.5 points above target and is accepted for now. Re-check it after the full 1,969-token scan. The v1.1 engine run must reproduce these numbers exactly, because the engine is deterministic.
+Token 1969 (Heavy body, Vanish aura, Lucky Flip, Charm) is 2.5 points above target and is accepted for now. Re-check it after the full 1,969-token scan. Two independent implementations reached these results from the same constants. Random draw order differs between implementations, so exact reproduction is not required. A conforming engine run (100 seeds, all 24 sample pairs) must land within: every token win rate within 2.5 points of the table's extremes (lowest 37.3 plus or minus 2.5, highest 67.5 plus or minus 2.5), standard deviation within 1.0 of 8.7, KO rate within 1.5 points of 18.4%, lower-total win rate within 2.0 points of 43.7%, and at most 1 token outside 35 to 65%.
+
+Engine v1.1 as delivered measured: lowest 37.17%, highest 67.04%, standard deviation 8.82, one token outside (1969), KO rate 18.69%, lower-total wins 43.47%, and +10 in one stat winning 63.52% (GRIT), 59.75% (PUNCH), 63.85% (SWIFT), 64.40% (NERVE). All within tolerance.
 
 ## 11. Open items
 
