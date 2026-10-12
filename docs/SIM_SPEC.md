@@ -1,6 +1,6 @@
-# ChogBound simulation spec v1
+# ChogBound simulation spec v1.1
 
-Status: proposed. All numbers are placeholders to be tuned by the balance tests in section 10. Rules change only if a test cannot be passed by tuning numbers.
+Status: v1.1. Numbers were tuned by sensitivity runs on the 24-token sample (section 10.7). They are still not final: the full 1,969-token scan can move them. Rules change only if a test cannot be passed by tuning numbers.
 
 Companion to `docs/TRAIT_MAPPING.md`, which defines stats, traits, and effect classes.
 
@@ -37,13 +37,13 @@ Seed: a uint64 taken from the hash of (night number, lower tokenId, higher token
 
 ## 5. Resolving one attack
 
-1. Hit chance = clamp(0.85 + 0.004 x (attacker SWIFT - defender SWIFT), 0.60, 0.95).
+1. Hit chance = clamp(0.85 + 0.0016 x (attacker SWIFT - defender SWIFT), 0.60, 0.95).
    Modifiers: Stare Down lowers the rival's first attack by 0.15. Vanish makes the first incoming hit a dodge. Laser Stare ignores dodge and always hits. Lucky Flip re-rolls one miss per fight.
-2. Damage = attack stat x 0.18 x move multiplier x (1 + variance) x (1 - guard) x crit.
-   - Move multiplier: Headbutt 1.15, Quick Feet 0.95, Iron Hide 0.85 (and the next incoming hit deals 20% less), Laser Stare 1.30.
-   - guard = clamp(0.006 x (defender GRIT - 40), -0.10, 0.20).
+2. Damage = attack stat x 0.204 x move multiplier x (1 + variance) x (1 - guard) x crit.
+   - Move multiplier: Headbutt 1.32, Quick Feet 0.68, Iron Hide 0.85 (and the next incoming hit deals 20% less), Laser Stare 1.30.
+   - guard = clamp(0.0036 x (defender GRIT - 40), -0.10, 0.28).
    - variance is uniform in plus or minus v: Safe 5%, Even 15%, Gamble 30%.
-   - crit chance = 0.05 + 0.004 x (attacker NERVE - 40), plus 0.10 for Gamble, plus 0.15 for Wild. Crit multiplier 1.5.
+   - crit chance = 0.05 + 0.0161 x (attacker NERVE - 40), plus 0.10 for Gamble, plus 0.15 for Wild. Crit multiplier 1.75.
 3. Round to the nearest integer, minimum 1 on a hit.
 
 Temperament modifiers: Feisty gives +10% damage dealt in rounds 1 to 3 and -10% in rounds 6 to 8. Cool gives -10% damage taken in rounds 1 to 3, then +10% damage dealt on the first action after being hit. Wild is described in section 4.
@@ -51,7 +51,7 @@ Temperament modifiers: Feisty gives +10% damage dealt in rounds 1 to 3 and -10% 
 ## 6. Trait effects in the simulation
 
 Eyes signatures (active only when selected as the plan move):
-- Laser Stare: the first action of the fight, once, auto-hit, move multiplier 1.30.
+- Laser Stare: the first action of the fight, once, auto-hit, move multiplier 1.30. After that first action it is spent: the go-to attack becomes Headbutt, exactly as for Scan, Charm, and Stare Down. It must never appear twice in one fight.
 - Scan: before round 1 the rival's plan is revealed, and your first counter (first action after being hit) deals +25%.
 - Charm: the rival's NERVE is -8 in rounds 1 to 3.
 - Stare Down: the rival's first attack has -0.15 hit chance.
@@ -141,6 +141,20 @@ Invariants (each must have a unit test):
 6. Transfer test: after a token changes wallets, its record is unchanged and its plan resets.
 
 If a test fails, tune numbers, not rules.
+
+## 10.7 Recorded tuning results (v1.1, 24-token sample, 100 seeds per pair, 27,600 fights)
+
+Why numbers had to change: with the v1 numbers, +10 in one stat won 78% (SWIFT), 69% (GRIT), 62% (PUNCH), and 57% (NERVE) against an all-40 baseline. SWIFT was overpowered and NERVE nearly worthless, so Chogs built on Light bodies won and Showy-body Chogs lost. The v1.1 numbers bring those four values to 60% to 64.5%.
+
+| Check | v1 | v1.1 |
+|---|---:|---:|
+| Tokens outside 35 to 65% win rate | 7 | 1 (token 1969 at 67.5%) |
+| Lowest and highest token win rate | 19.1% / 71.5% | 37.3% / 67.5% |
+| Spread (standard deviation of win rates) | 14.5 | 8.7 |
+| KO rate (target 5 to 25%) | 0.9% | 18.4% |
+| Lower-total fighter wins (target 35 to 45%) | 41.8% | 43.7% |
+
+Token 1969 (Heavy body, Vanish aura, Lucky Flip, Charm) is 2.5 points above target and is accepted for now. Re-check it after the full 1,969-token scan. The v1.1 engine run must reproduce these numbers exactly, because the engine is deterministic.
 
 ## 11. Open items
 
