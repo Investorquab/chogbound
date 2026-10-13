@@ -1,6 +1,6 @@
-# ChogBound simulation engine v1.1
+# ChogBound simulation engine v1.2
 
-Deterministic, headless TypeScript combat simulation based on `docs/TRAIT_MAPPING.md`, `docs/SIM_SPEC.md` v1.1, and the repository-root `traits.json`. The package contains no UI, wallet code, or contracts. Node.js 18+ is required; Vitest, TypeScript, and `tsx` are development-only tools.
+Deterministic, headless TypeScript combat simulation based on `docs/TRAIT_MAPPING.md`, `docs/SIM_SPEC.md` v1.2, and the repository-root `traits.json`. The package contains no UI, wallet code, or contracts. Node.js 18+ is required; Vitest, TypeScript, and `tsx` are development-only tools.
 
 ## Install and run
 
@@ -13,6 +13,7 @@ npm run typecheck
 npm run balance
 npm run coverage
 npm run balance:full -- ../traits.json 200
+npm run fight -- 1 24 --a-temperament Wild --a-move "Laser Stare" --seed 42
 ```
 
 All scripts default to the repository-root `traits.json`; an alternate metadata path can be supplied as the first argument. `balance-full.ts` accepts the fight count as its second argument and defaults to 20,000 random pairs.
@@ -31,17 +32,18 @@ The implementation does not auto-tune constants. A failed benchmark is reported 
 
 ## Laser Stare
 
-When a plan selects a fighter's Laser Stare signature, that fighter uses Laser Stare on its opening action (auto-hit, including against Vanish). The signature attack is then spent; subsequent planned signature-go-to attacks use Headbutt as specified in SIM_SPEC section 6. The random-fight regression test checks that neither fighter logs Laser Stare more than once per fight across 10,000 seeded fights.
+When a plan selects a fighter's Laser Stare signature, that fighter uses Laser Stare on its first action (auto-hit, including against Vanish), even under Wild. Laser Stare consumes the defender's one-time Vanish dodge. The signature attack is then spent; after the opening, Wild resumes selecting core moves uniformly. Lucky Flip only rerolls a normal hit-chance miss and never rerolls a Chaos Gaze coin-flip miss, per SIM_SPEC section 6.1. The random-fight regression test checks that neither fighter logs Laser Stare more than once per fight across 10,000 seeded fights.
 
 ## Data shape and defaults
 
 `src/traits.ts` loads `../traits.json` from the repository root by default and accepts an explicit path. It supports the current object keyed by token ID, where each record has `name` and `attributes: [{ trait_type, value }]`; `image` is optional. It also tolerates the earlier sample-array shape for migration compatibility. `sim/data/traits.sample.json` was removed so there is one authoritative dataset rather than a stale duplicate.
 
-`fighterFromToken(tokenId, token)` maps a metadata record to the fight-ready fighter. `computeStats(tokenOrAttributes)` returns the four clamped stats, source-trait bonus records, and resolved trait classes. `simulate(fighterA, fighterB, planA, planB, seed)` returns `{ events, summary }`. `renderNarration(event, voiceClass)` uses only the event's narration key and variables.
+`fighterFromToken(tokenId, token)` maps a metadata record to the fight-ready fighter. `computeStats(tokenOrAttributes)` returns the four clamped stats, source-trait bonus records, and resolved trait classes. `simulate(fighterA, fighterB, planA, planB, seed)` returns `{ events, summary }`. `renderNarration(event, voiceClass, seed)` selects voice-specific narration deterministically from the event index and fight seed, with four templates per event category and Mouth voice class. It does not make extra random draws.
 
 ## Scripts
 
-- `scripts/balance.ts [traits-file]`: all unique token pairs, 100 deterministic seeds per pair, uniformly sampled plans. Reports per-token rates, min/max, population standard deviation, out-of-band IDs, KO rate, lower-total win rate, and comparison to SIM_SPEC section 10.7.
+- `scripts/balance.ts [traits-file]`: all unique token pairs, 100 deterministic seeds per pair, uniformly sampled plans. Reports per-token rates, min/max, population standard deviation, out-of-band IDs, KO rate, lower-total win rate, and a separate PASS/FAIL for each tolerance in SIM_SPEC section 10.7. It reports results without auto-tuning constants.
+- `scripts/run-fight.ts <token-a> <token-b> [options]`: prints fighter and plan details, the full event log with deterministic narration, the summary, and end-of-fight narration. Supported flags: `--a-temperament`, `--a-move`, `--a-risk`, `--b-temperament`, `--b-move`, `--b-risk`, and `--seed`. Values with spaces, such as `Laser Stare` or `Quick Feet`, must be quoted in the shell. Defaults are Feisty, Headbutt, Even, and seed `1`.
 - `scripts/coverage.ts [traits-file]`: report-only audit of Body, Eyes, Head, Mouth, and Accessory values routed to an Unknown or neutral fallback, with occurrence counts and total tokens processed. It does not modify the mapping.
 - `scripts/balance-full.ts [traits-file] [N]`: runs N random distinct-token pairs (default 20,000) with random plans and reports sampled win-rate range, KO rate, and the ten lowest/highest observed tokens with their trait values. Tokens not sampled are excluded from ranking and counted separately.
 
@@ -51,22 +53,19 @@ When a plan selects a fighter's Laser Stare signature, that fighter uses Laser S
 2. **Missing Body vs Naked:** the mapping applies Bare when Body is absent or `Naked = Yes`, even if a Body value is present with Naked set to Yes.
 3. **Trinket tie-break:** Trinket selects the lowest pre-clamp stat after other trait/tier bonuses; ties follow GRIT, PUNCH, SWIFT, NERVE order.
 4. **Tier labels:** Common and Uncommon are explicit; other tier labels are interpreted from a numeric step where present, otherwise as +2. Other metadata tiers need review.
-5. **Wild with a selected signature:** Wild chooses among core moves as section 4 says, while the selected signature's passive effect remains active. Whether a signature that is itself an attack (Laser Stare / Chaos Gaze) should override Wild's core-only action rule is not specified; current code preserves Wild's core-only selection except that Laser Stare's opening action is guaranteed when selected.
-6. **Laser Stare vs Vanish:** SIM_SPEC says Laser Stare ignores dodge and always hits, while Vanish dodges the first incoming hit. The engine treats Laser Stare as an exception to the dodge, but the exact question of whether that ignored hit consumes Vanish's one-time trigger is not explicitly stated. The current implementation records the incoming attempt as the Vanish trigger while allowing Laser Stare to hit.
-7. **Charm scope:** Charm reduces rival NERVE by 8 in rounds 1–3 for round-order ties and crit calculations; stored base totals remain unchanged.
-8. **Cool counter:** the +10% damage is consumed on the first action after being hit. Whether it should re-arm after subsequent hits is not specified; this implementation uses one counter bonus per fight.
-9. **Scorch timing:** burns are scheduled at the end of the two rounds after the first landed hit. A KO ends the fight immediately and suppresses later actions and burns.
-10. **Calm Glow vs lethal damage:** Calm Glow does not revive a fighter reduced to 0 HP by a lethal hit.
-11. **Upset definition:** the winner must start with a lower four-stat total, be behind at the end of a logged event in an earlier round, and finish with more HP.
-12. **Lucky Flip vs Chaos Gaze:** the spec does not state whether Lucky Flip rerolls Chaos Gaze's dedicated coin-flip miss; the implementation applies Lucky Flip to the ordinary hit check before the Chaos Gaze roll.
-13. **Sidekick interactions:** Sidekick deals fixed 4 damage without the normal guard / Iron Hide damage path, and can arm Scorch. The spec does not define these interactions.
-14. **Random-plan distribution:** the spec asks for random plans but does not define a distribution; balance scripts choose uniformly among temperaments, risks, and core moves plus an available signature.
-15. **Pair seed / sampling protocol:** section 10.7 records results for 100 seeds per unique pair but does not specify the original PRNG stream or random-plan stream. The script uses stable per-pair/per-seed strings. If results differ, the difference is reported; constants are not tuned to force a match.
-16. **Transfer test:** wallet ownership, persisted records, and plan resets belong to the application layer and cannot be validated in this simulation-only package.
-
+5. **Wild with a selected signature:** Wild chooses core moves uniformly; section 6.1 explicitly guarantees a selected Laser Stare opening on the owner's first action before Wild resumes core-move selection.
+6. **Charm scope:** Charm reduces rival NERVE by 8 in rounds 1–3 for round-order ties and crit calculations; stored base totals remain unchanged.
+7. **Cool counter:** the +10% damage is consumed on the first action after being hit. Whether it should re-arm after subsequent hits is not specified; this implementation uses one counter bonus per fight.
+8. **Scorch timing:** burns are scheduled at the end of the two rounds after the first landed hit. A KO ends the fight immediately and suppresses later actions and burns.
+9. **Calm Glow vs lethal damage:** Calm Glow does not revive a fighter reduced to 0 HP by a lethal hit.
+10. **Upset definition:** the winner must start with a lower four-stat total, be behind at the end of a logged event in an earlier round, and finish with more HP.
+11. **Sidekick interactions:** Sidekick deals fixed 4 damage without the normal guard / Iron Hide damage path, and can arm Scorch. The spec does not define these interactions.
+12. **Random-plan distribution:** the spec asks for random plans but does not define a distribution; balance scripts choose uniformly among temperaments, risks, and core moves plus an available signature.
+13. **Pair seed / sampling protocol:** section 10.7 records results for 100 seeds per unique pair but does not specify the original PRNG stream or random-plan stream. The script uses stable per-pair/per-seed strings. If results differ, the difference is reported; constants are not tuned to force a match.
+14. **Transfer test:** wallet ownership, persisted records, and plan resets belong to the application layer and cannot be validated in this simulation-only package.
 ## Actual validation results
 
-### Section 10.7 balance run
+### Section 10.7 balance run (historical v1.1 snapshot; rerun `npm run balance` for current results)
 
 The balance script executed 27,600 fights across 24 tokens (100 deterministic seeds per unique pair). This run uses the checked-in 24-token sample converted into the root `traits.json` object shape. The shell could not independently fetch GitHub due DNS failure, so this is based on the existing sample copy described by the prior README as derived from root metadata; the root-file loader itself defaults to `../traits.json` in the repository.
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { simulate } from '../src/fight.js';
-import { renderNarration } from '../src/narration.js';
+import { classifyNarration, renderNarration, renderNarrationKind } from '../src/narration.js';
 import { computeStats } from '../src/stats.js';
 import { createRng } from '../src/rng.js';
 import type { Fighter, Plan, TraitAttribute } from '../src/types.js';
@@ -46,10 +46,12 @@ describe('fight engine',()=>{
  it('uses source event variables for every narrated number',()=>{
   const result=simulate(fighter('scan',{Eyes:'BTC Glass',Aura:'Fire',Accessory:'Green Candle'}),fighter('glow',{Aura:'Light Purple'}),plan({move:'Scan'}),plan(),44);
   for(const e of result.events){
-   const text=renderNarration(e,e.actor==='a'?fighter('scan',{Eyes:'BTC Glass',Aura:'Fire',Accessory:'Green Candle'}).voiceClass:fighter('glow',{Aura:'Light Purple'}).voiceClass);
-   const numbers=[...text.matchAll(/\b\d+(?:\.\d+)?\b/g)].map(m=>Number(m[0]));
    const allowed=Object.values(e.vars).filter(v=>typeof v==='number') as number[];
-   for(const n of numbers) expect(allowed).toContain(n);
+   for(const voice of ['fierce','smug','hustler','hungry','gloom','neutral'] as const){
+    const text=renderNarration(e,voice,result.summary.seed);
+    const numbers=[...text.matchAll(/\b\d+(?:\.\d+)?\b/g)].map(m=>Number(m[0]));
+    for(const n of numbers) expect(allowed,`${voice}: narration number ${n} in event ${e.n}`).toContain(n);
+   }
   }
  });
  it('changes the log when the fighter is swapped for a different Chog against the same rival',()=>{
@@ -115,4 +117,62 @@ describe('fight engine',()=>{
   const spread=Math.max(...Object.values(rates))-Math.min(...Object.values(rates));
   expect(spread).toBeGreaterThanOrEqual(0.02);
  });
+
+ it('Laser Stare ignores and consumes Vanish dodge',()=>{
+  const laser={...fighter('laser',{Eyes:'fire laser'}),stats:{...fighter('laser',{Eyes:'fire laser'}).stats,SWIFT:95}};
+  const vanish=fighter('vanish',{Eyes:'Base',Aura:'Smoke',Body:'Squid Game Guard'});
+  const result=simulate(laser,vanish,plan({temperament:'Wild',move:'Laser Stare'}),plan({temperament:'Wild'}),'laser-vanish-ruling');
+  const laserEvent=result.events.find(e=>e.actor==='a'&&e.move==='Laser Stare');
+  expect(laserEvent).toBeDefined();
+  expect(laserEvent?.procs).toContain('laser-ignores-vanish');
+  expect(laserEvent?.outcome).not.toBe('dodge');
+  expect(result.events.some(e=>e.actor==='a'&&e.outcome==='dodge'&&e.procs.includes('vanish'))).toBe(false);
+ });
+ it('Lucky Flip never rerolls a Chaos Gaze coin-flip miss',()=>{
+  const chaos=fighter('chaos',{Eyes:'Retard',Accessory:'Coin'});
+  const rival=fighter('rival',{Eyes:'Base'});
+  let witnessed=false;
+  for(let seed=0;seed<500&&!witnessed;seed++){
+   const result=simulate(chaos,rival,plan({move:'Chaos Gaze'}),plan(),`chaos-lucky-ruling:${seed}`);
+   const miss=result.events.find(e=>e.actor==='a'&&e.move==='Chaos Gaze'&&e.procs.includes('chaos-gaze-miss'));
+   if(miss){
+    expect(miss.outcome).toBe('miss');
+    expect(miss.procs).not.toContain('lucky-flip');
+    witnessed=true;
+   }
+  }
+  expect(witnessed).toBe(true);
+ });
+ it('selected Laser Stare opens on the owner first action under Wild',()=>{
+  const base=fighter('wild-laser',{Eyes:'fire laser'});
+  const laser={...base,stats:{...base.stats,SWIFT:95}};
+  const rival=fighter('wild-rival',{Eyes:'Base',Body:'Squid Game Guard'});
+  const result=simulate(laser,rival,plan({temperament:'Wild',move:'Laser Stare'}),plan({temperament:'Wild'}),'wild-laser-opening');
+  const firstAction=result.events.find(e=>e.actor==='a'&&['opening','attack'].includes(e.action));
+  expect(firstAction?.move).toBe('Laser Stare');
+  expect(firstAction?.procs).toContain('laser-auto-hit');
+ });
+ it('has four distinct deterministic templates for every voice and narration kind',()=>{
+  const voices=['fierce','smug','hustler','hungry','gloom','neutral'] as const;
+  const kinds=['hit','crit','miss','dodge','proc','ko','win'] as const;
+  const event={n:1,round:1,actor:'a' as const,action:'attack' as const,move:'Headbutt' as const,outcome:'hit' as const,damage:12,heal:0,hp_after:{a:88,b:0},procs:['test-proc'],narration_key:'hit.headbutt',vars:{damage:12,target_hp:0}};
+  for(const voice of voices) for(const kind of kinds){
+   const lines=new Set([0,1,2,3].map(n=>renderNarrationKind({...event,n:n+1},voice,kind,'template-seed')));
+   expect(lines.size,`${voice} ${kind}`).toBe(4);
+  }
+ });
+ it('never repeats consecutive narration lines for a voice and seed',()=>{
+  const result=simulate(fighter('a',{Eyes:'fire laser',Aura:'Fire',Accessory:'Green Candle'}),fighter('b',{Aura:'Light Purple',Accessory:'Coin'}),plan({move:'Laser Stare',risk:'Gamble'}),plan({risk:'Gamble'}),'narration-consecutive-seed');
+  for(const voice of ['fierce','smug','hustler','hungry','gloom','neutral'] as const){
+   const lines=result.events.map(e=>renderNarration(e,voice,result.summary.seed));
+   for(let i=1;i<lines.length;i++) expect(lines[i],`${voice} event ${i+1}`).not.toBe(lines[i-1]);
+  }
+ });
+ it('narration category is derived from event outcomes and knockout HP',()=>{
+  const result=simulate(a,b,plan(),plan(),'category-seed');
+  for(const event of result.events){
+   expect(['hit','crit','miss','dodge','proc','ko']).toContain(classifyNarration(event));
+  }
+ });
+
 });

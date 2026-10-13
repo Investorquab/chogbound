@@ -43,7 +43,7 @@ const rates = rows.map(r => r.rate);
 const mean = rates.reduce((sum, rate) => sum + rate, 0) / rates.length;
 const stddev = Math.sqrt(rates.reduce((sum, rate) => sum + (rate - mean) ** 2, 0) / rates.length);
 const outside = rows.filter(r => r.rate < 35 || r.rate > 65);
-console.log(`ChogBound v1.1 balance — ${fights.toLocaleString()} fights, ${fighters.length} tokens, ${Date.now() - started} ms`);
+console.log(`ChogBound v1.2 balance — ${fights.toLocaleString()} fights, ${fighters.length} tokens, ${Date.now() - started} ms`);
 console.log('Token | Name | Base total | Wins | Win rate');
 console.log('---|---|---:|---:|---:');
 for (const r of rows) console.log(`${r.id} | ${r.name} | ${r.total} | ${r.wins}/${(fighters.length - 1) * 100} | ${r.rate.toFixed(2)}%`);
@@ -53,4 +53,18 @@ console.log(`Population standard deviation of token rates: ${stddev.toFixed(2)} 
 console.log(`Tokens outside 35–65%: ${outside.length}${outside.length ? ` (${outside.map(r => `${r.id} ${r.rate.toFixed(2)}%`).join(', ')})` : ''}`);
 console.log(`Overall KO rate: ${(koCount / fights * 100).toFixed(2)}% (${koCount}/${fights})`);
 console.log(`Lower-total fighter win rate: ${(lowerWins / lowerTotalFights * 100).toFixed(2)}% (${lowerWins}/${lowerTotalFights}; equal-total pairs excluded)`);
-console.log(`Benchmark match: ${Math.abs(Math.min(...rates) - 37.3) < 0.05 && Math.abs(Math.max(...rates) - 67.5) < 0.05 && Math.abs(stddev - 8.7) < 0.05 && outside.length === 1 && outside[0]?.id === '1969' && Math.abs(koCount / fights * 100 - 18.4) < 0.05 && Math.abs(lowerWins / lowerTotalFights * 100 - 43.7) < 0.05 ? 'PASS' : 'FAIL (no auto-tuning performed)'}`);
+const lowestRate = Math.min(...rates);
+const highestRate = Math.max(...rates);
+const koRate = fights ? koCount / fights * 100 : 0;
+const lowerTotalRate = lowerTotalFights ? lowerWins / lowerTotalFights * 100 : 0;
+const checks: Array<{ name: string; pass: boolean; observed: string; target: string }> = [
+  { name: 'Lowest token win rate', pass: Math.abs(lowestRate - 37.3) <= 2.5, observed: `${lowestRate.toFixed(2)}%`, target: '37.3% ± 2.5 pp' },
+  { name: 'Highest token win rate', pass: Math.abs(highestRate - 67.5) <= 2.5, observed: `${highestRate.toFixed(2)}%`, target: '67.5% ± 2.5 pp' },
+  { name: 'Standard deviation', pass: Math.abs(stddev - 8.7) <= 1.0, observed: `${stddev.toFixed(2)} pp`, target: '8.7 ± 1.0 pp' },
+  { name: 'KO rate', pass: Math.abs(koRate - 18.4) <= 1.5, observed: `${koRate.toFixed(2)}%`, target: '18.4% ± 1.5 pp' },
+  { name: 'Lower-total fighter win rate', pass: Math.abs(lowerTotalRate - 43.7) <= 2.0, observed: `${lowerTotalRate.toFixed(2)}%`, target: '43.7% ± 2.0 pp' },
+  { name: 'Tokens outside 35–65%', pass: outside.length <= 1, observed: `${outside.length}${outside.length ? ` (${outside.map(r => `${r.id} ${r.rate.toFixed(2)}%`).join(', ')})` : ''}`, target: 'at most 1 token' },
+];
+console.log('Section 10.7 tolerance checks (no auto-tuning):');
+for (const check of checks) console.log(`${check.pass ? 'PASS' : 'FAIL'} | ${check.name}: ${check.observed} (target ${check.target})`);
+console.log(`Overall: ${checks.every(check => check.pass) ? 'PASS' : 'FAIL'}`);

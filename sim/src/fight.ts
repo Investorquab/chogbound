@@ -59,7 +59,7 @@ export function simulate(fighterA: Fighter, fighterB: Fighter, planA: Plan, plan
       if (move === 'Laser Stare' && !attacker.laserDodgeIgnoreUsed) { defender.firstIncomingDodged = true; attacker.laserDodgeIgnoreUsed = true; procs.push('laser-ignores-vanish'); }
       else { defender.firstIncomingDodged = true; hit = false; procs.push('vanish'); event(round, actor, 'attack', actualMove, 'dodge', 0, 0, procs, 'attack.dodge', {}); attacker.firstAttackDone = true; return; }
     }
-    if (!hit && attacker.fighter.accessory === 'lucky-flip' && !attacker.luckyFlipUsed) { attacker.luckyFlipUsed = true; procs.push('lucky-flip'); hit = rng.chance(hitChance); }
+    if (!hit && move !== 'Chaos Gaze' && attacker.fighter.accessory === 'lucky-flip' && !attacker.luckyFlipUsed) { attacker.luckyFlipUsed = true; procs.push('lucky-flip'); hit = rng.chance(hitChance); }
     if (move === 'Chaos Gaze') { const chaosHit = rng.chance(0.5); hit = chaosHit; multiplier = MOVE_MULTIPLIERS['Chaos Gaze']; procs.push(chaosHit ? 'chaos-gaze-boost' : 'chaos-gaze-miss'); }
     attacker.firstAttackDone = true;
     if (!hit) { event(round, actor, 'attack', actualMove, 'miss', 0, 0, procs, 'attack.miss', { attacker: attacker.fighter.name, target: defender.fighter.name }); return; }

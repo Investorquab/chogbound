@@ -1,19 +1,39 @@
-# ChogBound simulation engine v1.1 — validation report
+# ChogBound simulation engine v1.2 — validation report
 
-## Environment
+## Source
 
-The source repository was read from `main` at commit `61105985da6c9ae66a0e09cf5d06b117b7bef86d`. Shell access to GitHub and npm was blocked by DNS resolution. The local 24-token balance run used the checked-in sample converted into root `traits.json` object shape; see `../results-summary.md` for this limitation.
+- Repository: `Investorquab/chogbound`, branch `main`.
+- Spec: `docs/SIM_SPEC.md` v1.2, including rulings in section 6.1 and tolerance criteria in section 10.7.
+- Tuning constants were not changed.
 
-## Checks that ran
+## Test execution in this environment
 
-- TypeScript source, tests, and scripts compile-only check: **PASS** with global TypeScript and a temporary ambient declaration for Vitest.
-- 10,000 random-plan fights for Laser Stare uniqueness: **0 repeated uses** by any fighter.
-- 10,000 random-plan fights for event HP accounting and bounds: **0 failures**.
-- Stat parity, 6,000 seeds per stat: GRIT +10 **63.52%**, PUNCH +10 **59.75%**, SWIFT +10 **63.85%**, NERVE +10 **64.40%**. All four are within 58–67%.
-- Coverage: **24 tokens processed**, zero values routed to an Unknown/neutral fallback.
-- Full-balance smoke test, N=200: KO rate **13.00%**, sampled win-rate range **18.75%–77.78%**.
-- 100-seed all-pairs balance: **27,600 fights**, min/max **37.17% / 67.04%**, population standard deviation **8.82**, one token outside 35–65% (1969), KO rate **18.69%**, lower-total wins **43.47%**. This does **not** exactly match the recorded v1.1 aggregate table; constants were not tuned.
+Requested command sequence: `cd sim`, `npm install`, `npm test`.
 
-## Official Vitest status
+- `npm install`: **not run to completion**. The command was attempted but timed out after 20 seconds without output; network/DNS access to npm is unavailable in this environment.
+- `npm test`: test suite **not run** because dependencies were not installed. Actual output:
 
-**NOT RUN.** `npm install && npm test` timed out. A retry of `npm install` failed with `EAI_AGAIN` while resolving `registry.npmjs.org`. Do not treat compile-only/custom checks as a Vitest pass.
+```text
+> chogbound-sim@0.1.0 test
+> vitest run
+
+sh: 1: vitest: not found
+```
+
+No PASS result is claimed for the test suite. Run `npm install && npm test` in an environment with npm registry access.
+
+## Changes in this package
+
+- Applied the three SIM_SPEC section 6.1 rulings in the fight engine and added regression tests.
+- Replaced exact benchmark equality with individual tolerance-based PASS/FAIL checks for all six section 10.7 criteria. No tuning constants were changed.
+- Added deterministic, event-index-and-seed narration templates for all six Mouth voice classes and the hit, crit, miss, dodge, proc, KO, and win categories, plus tests for consecutive-line uniqueness and event-number integrity.
+- Added `scripts/run-fight.ts` and documented its token, plan, and seed flags in `README.md`.
+
+The test suite could not be executed here; the test additions and changes are included for verification in a network-enabled environment.
+
+## Additional local checks (not a substitute for `npm test`)
+
+- TypeScript transpilation syntax check: **PASS** for all simulator `.ts` files using the globally installed TypeScript compiler API. Full type checking was blocked because `@types/node` and `vitest/globals` were not installed.
+- Manual runtime smoke checks after transpilation: **PASS** for the three section 6.1 rulings, four distinct templates per voice/category, consecutive-line uniqueness, and event-variable number integrity.
+- `scripts/run-fight.ts` runtime smoke: **PASS** using sample token IDs `300` and `24`; emitted a 16-event log with narration and a fight summary.
+- `scripts/balance.ts` runtime smoke on the retained 24-token sample: **PASS** for all six section 10.7 tolerance criteria. Observed: lowest 37.17%, highest 67.04%, standard deviation 8.82 pp, KO 18.69%, lower-total wins 43.47%, and one token outside the 35–65% band (token 1969 at 67.04%). This was run against the 24-token sample available in the prior snapshot, not by downloading the current root `traits.json` in this network-restricted environment.
