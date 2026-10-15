@@ -1,76 +1,107 @@
-# ChogBound trait mapping v1
+# ChogBound trait mapping v2
 
-Stats: GRIT (toughness), PUNCH (damage), SWIFT (speed and dodge), NERVE (crits, composure).
-Formula: stat = clamp(40 + sum of trait bonuses + tier bonus, 20, 95).
-Tier bonus: Common +0, Uncommon +2 to every stat, unknown higher tiers +2 per step.
-The small spread is deliberate: underdogs must be able to win.
-The UI always shows the source trait next to every number.
+Source of truth for the numbers is `trait-mapping-v2.json`. This page is the readable version. Every trait value found in the full 1,969-token scan is mapped. Anything not listed (future mints) falls back to the Unknown rows.
 
-## Body: GRIT / SWIFT / NERVE
+Stats: GRIT, PUNCH, SWIFT, NERVE. Formula: stat = clamp(40 + trait bonuses + tier bonus, 20, 95). Legendary 1/1 tokens use a fixed kit instead.
+
+## Tier
+
+| Tier | Bonus to every stat | Tokens |
+|---|---|---:|
+| Common | +0 | 1,279 |
+| Uncommon | +1 | 590 |
+| Rare (Skull form) | +2 | 60 |
+| Epic (Radioactive base) | +3 | 30 |
+| Legendary (1/1) | fixed kit | 10 |
+
+## Body
+
 | Class | Bonus | Values |
 |---|---|---|
-| Heavy | GRIT +16, SWIFT -6 | Squid Game Guard, Dragon suit, Astro Suit, dark jacket, Red jacket |
-| Light | SWIFT +14, GRIT -4 | dark tee, Red Sleeveless, Hawaiian Polo, Black Trackset, Brown Homeless Shirt, Yellow Yukata, Yellow 143 Jersey, Blue 143 Jersey, dark vest, pink vest, purple vest |
-| Showy | NERVE +12, GRIT +4 | Cream Tuxedo, Pink Tuxedo, Banana suit, Jesus |
-| Bare (no Body or Naked = Yes) | SWIFT +10, GRIT -6 | none |
-| Unknown | GRIT +4, SWIFT +4 | any unmapped value |
+| Heavy | GRIT +16, SWIFT -6 | Army Vest, Astro Suit, Blue Holed Jacket, Blue jacket, dark jacket, Dragon suit, Electro Hoodie, Glitch Hoodie, Golden Armor, Mon Hoodie, Orange Holed Jacket, Orange Hoodie, Peach Hoodie, Red jacket, Sci Fi, Shark Suit, Sky Hoodie, Squid Game Guard, Yellow Hoodie |
+| Light | SWIFT +14, GRIT -4 | BBC, Black Shirt, Black Trackset, Black Vest, Blue 143 Jersey, Blue Homeless Shirt, Blue Sleeveless, blue tee, Boner, Brown Homeless Shirt, Chug Life, CWO, Cyan Shirt, dark tee, dark vest, Farmer Shirt, Fire Shirt, Gojo, Grey Homeless Shirt, Grey Shirt, Guko, Hawaiian Polo, Inmate, MILF Lover, Orange Sleeveless, Pink Shirt, pink vest, Prisoner, Purple Shirt, Purple Tank, purple vest, Red 143 Jersey, Red shirt, Red Sleeveless, red tee, Red Trackset, Six Seven, Squid Game, Stripe Shirt, Stripe shirts, Stripes, Tank Top, Virgin, White Pure Shirt, White Shirt, White Sleeveless, White Tank, white tee, White Yukata, Yellow 143 Jersey, Yellow Shirt, Yellow Yukata, Zero THOTS |
+| Showy | NERVE +12, GRIT +4 | Aqua Tuxedo, Banana suit, Blue Chinese, Blue Mafia, Blue tuxedo, CEO Vest, Cream Tuxedo, Cyan tuxedo, Duck Float, Gangster suit, Jesus, Jesus Robe, Kings Robe, Mummy, Pink Tuxedo, Red Chinese, Red Tuxedo, toad blue suit, Toad green Suit, Toad pink suit, Tuxedo, White tuxedo, Wizard, Wizard Cape |
+| Bare (no Body, or Naked = Yes) | SWIFT +12, GRIT -2, NERVE +2 | none |
 
-## Eyes: PUNCH and signature move
-| Class | PUNCH | Signature move | Values |
-|---|---|---|---|
-| Laser | +14 | Laser Stare: ranged hit that ignores dodge once per fight | fire laser, Green laser, cyan laser, Purple laser |
-| Tech | +8 | Scan: reveals the rival's plan before round 1, first counter deals +25% | BTC Glass, 3D Glass, Modern VR, Anime Glass |
-| Charm | +4 | Charm: rival NERVE -8 for rounds 1 to 3 | Heart, Happy, Smirk, XD, Round Tear |
-| Intimidate | +10 | Stare Down: rival's first attack is 15% less accurate | Thug, Side Eye, Dead, Vertical, MOG |
-| Wild | +12 | Chaos Gaze: each use is a coin flip between 1.8x damage and a miss | Retard |
-| Neutral | +6 | none | Base, Round Eye, any unmapped value |
+## Eyes (PUNCH and signature move)
 
-## Head: NERVE / SWIFT
+| Class | PUNCH | Signature (when selected as the move) | Values |
+|---|---:|---|---|
+| Laser | +11 | Laser Stare | cyan laser, fire laser, Green laser, Purple laser |
+| Tech | +9 | Scan | 3D Glass, Anime Glass, BTC Glass, Classic VR, Gradient visor, Modern VR, Plasma visor, Retro Glass, Sunset visor |
+| Charm | +8 | Charm | Blue Happy, Blue Smirk, Closed Eye Crying, Frog, Green Happy, Green Smirk, Happy, Heart, Mixed Happy, Round Crying, Round Tear, Smirk, Teary, Worried, XD |
+| Intimidate | +10 | Stare Down | Angry, Chog Viper, Dead, Green Side Eye, Mixed Side Eye, MOG, Side Eye, Thug, Tired, Vertical |
+| Wild | +10 | Chaos Gaze | Blue Retard, Clown Eye, Clown Eye Mix, Green Retard, Mixed Retard, Red Retard, Retard |
+| Neutral | +9 | none | Base, Blue Flat, Blue Round Eye, Flat, Green Round Eye, Mixed Round Eye, Normal, Normal Eye, Red Flat, Red Round Eye, Round, Round Eye, Up |
+
+## Head
+
 | Class | Bonus | Values |
 |---|---|---|
-| Cap | NERVE +8 | MCGA, MCGA Cap, TISM Cap, Blue Bucket Cap, Gray Bucket Cap, BTC Cap, BTC Beanie, Mon Cap, RETARD Cap, Dollar Cap, JEET Cap, Chog Cap |
-| Style | SWIFT +6, NERVE +4 | Plumber, Robber, Red Headband, Durag, Rainbow Wig |
-| No Head | SWIFT +4 | none |
-| Unknown | NERVE +4 | any unmapped value |
+| Cap | NERVE +8 | 10k TPS Cap, 8 Ball Beanie, Balls Cap, Blue Bucket Cap, Boob Cap, BOOB Cap, BTC Beanie, BTC Cap, Buttcoin Cap, Chog Cap, Choggie Beanie, Choggie Cap, Cloud Cap, Crown, Diamond, Dollar Cap, ETH Cap, Gray Bucket Cap, Holy Seal, Horny Cap, JEET Cap, Jeet Cap, MCGA, MCGA Cap, MMGA Cap, Mon Beanie, Mon Cap, Orange Bucket Cap, Peace Cap, Red Peace Cap, RETARD Cap, RH Beanie, Silver wreath, Spartan Helmet, Star Cap, Thunder Cap, TISM Cap, WAGMI Cap, Wizard Beanie |
+| Style | SWIFT +6, NERVE +4 | 3rd Eye, Blue Laser, Bob Hair, Clown Nose, Demon Horn, devil horn, Durag, Gold Thorn, Head Wrap, Japan Headband, Mafia Hat, MEGA Chog, NEET, Peace hat, Plumber, Poison Shroom, Purple Horn, Rainbow Wig, Red Bandana, Red Headband, Red Horn, Robber, Russian Hat, Silver Thorn, Taped Banana, Void Horn, Wizard Hat |
+| No Head | SWIFT +4, NERVE +4 | none |
 
-## Mouth: NERVE and the Chog's voice (narration tone)
-| Class | NERVE | Voice | Values |
-|---|---|---|---|
-| Fierce | +8 | fierce | Grit |
-| Smug | +4 | smug | Smile, normal smile, Gold Tooth, Clown Mouth |
-| Hustler | +2 | hustler | BTC Coin, Mon coin |
-| Hungry | 0 | cheeky and hungry | Drooling, Bubblegum, Lip Bite |
-| Gloom | -4 | gloomy, plus Underdog Pride: +6 PUNCH while behind on HP | Sad, Flat |
-| Unknown | +2 | neutral | wo, any unmapped value |
+## Mouth (NERVE and narration voice)
 
-## Aura: one special trigger per fight (none if no Aura)
-| Class | Effect | Values |
+| Voice | NERVE | Values |
+|---|---:|---|
+| fierce | +4 | Grit |
+| smug | +3 | Clown Mouth, Gold Tooth, normal smile, Smile |
+| hustler | +2 | BTC Coin, Mon coin |
+| hungry | +2 | Bubblegum, Drooling, Lip Bite, Rainbow Puke |
+| gloom | +0 | Flat, Sad, Worried |
+| neutral | +2 | wo |
+
+Gloom also grants Underdog Pride: +6 PUNCH while behind on HP.
+
+## Aura (one trigger per fight, none if absent)
+
+| Effect | Rule | Values |
 |---|---|---|
-| Fire | Scorch: extra damage over 2 rounds after the first hit lands | Fire, Burning Aura |
-| Wind | Gust: acts first in round 1, SWIFT +8 | Wind |
-| Smoke | Vanish: dodges the first incoming hit | Smoke |
-| Glow | Calm Glow: restores 10% HP once when below 40% | Aqua Aura, Mint, Light Purple |
+| scorch | After your first landed hit, target loses 2 HP at the end of each of the next 2 rounds | Burning Aura, Electric Shock, Fiery Aura, Fire |
+| gust | Acts first in round 1, SWIFT +8 and +30% damage in round 1 | Cool Aura, Wind, Yellow Aura |
+| vanish | First incoming hit is dodged with 50% probability | Clean, Pink Mist, Smoke, White Aura |
+| calm-glow | First time HP drops below 40, heal 6 | Aqua Aura, Green Aura, Light Purple, Mint, Purple, Rose Aura, Rose Scent, Royal Aura, Royal Blue, Royal Blue Aura, Violet |
 
-## Accessory: one item effect (none if no Accessory)
-| Value | Effect |
-|---|---|
-| Green Candle | Pump: +8 PUNCH after landing the first hit |
-| Coin | Lucky Flip: re-roll one miss per fight |
-| Fwog | Sidekick: 20% chance each round of a bonus 4 damage hit |
-| SB | Trinket: +4 to the lowest stat (meaning of SB unconfirmed, do not invent lore) |
-| Unknown | Trinket |
+## Accessory (one effect, none if absent)
 
-## Cosmetic only (no stat effect)
-Background: tints the stage and share card. Skin, Base, Form: none.
-Side: mirrors the art so the two fighters face each other.
+| Effect | Rule | Values |
+|---|---|---|
+| pump | After your first landed hit, +4 PUNCH | Green Candle, Knife |
+| lucky-flip | Re-roll one miss, and the re-roll hits at half the normal chance | Cigar, Coin |
+| sidekick | Each round 12% chance of an extra 3 damage hit that cannot miss | Fwog, PEPE |
+| trinket | +4 to your lowest base stat | Heart, Red Candle, SB |
 
-## Moves (every Chog)
-Headbutt (scales with PUNCH), Quick Feet (scales with SWIFT), Iron Hide (scales with GRIT),
-plus one Signature move from Eyes if the class has one.
+## Signature moves (only when selected as the plan move)
 
-## Display aliases (UI text only, raw values stay in data)
-Retard becomes Goofy. RETARD Cap becomes Goof Cap.
+- Laser Stare: first action only, auto-hit, multiplier 1.15, then the go-to attack becomes Headbutt.
+- Scan: reveals the rival's plan before round 1. Your first counter deals +35%.
+- Charm: rival NERVE -30 in rounds 1 to 3.
+- Stare Down: rival's first attack has -20 points hit chance.
+- Chaos Gaze: replaces the go-to attack. Coin flip between 2.5x damage and a miss.
 
-## Worked example
-Dragon suit (Heavy), fire laser (Laser), Plumber (Style), Grit mouth (Fierce), Fire aura, Green Candle, Uncommon:
-GRIT 40+16+2 = 58. PUNCH 40+14+2 = 56. SWIFT 40-6+6+2 = 42. NERVE 40+4+8+2 = 54.
+## Legendary 1/1 kits
+
+| Name | GRIT | PUNCH | SWIFT | NERVE | Voice | Aura | Accessory | Signature |
+|---|---:|---:|---:|---:|---|---|---|---|
+| Blaze | 44 | 56 | 50 | 50 | fierce | scorch | pump | Laser Stare |
+| Burning Skully | 50 | 54 | 44 | 52 | gloom | scorch | sidekick | Chaos Gaze |
+| Chog Scream | 46 | 52 | 48 | 54 | fierce | gust | lucky-flip | Stare Down |
+| Chogbomination | 58 | 54 | 38 | 48 | hungry | calm-glow | sidekick | Chaos Gaze |
+| Frogger | 42 | 46 | 60 | 52 | hustler | gust | sidekick | Scan |
+| Grim | 52 | 50 | 46 | 52 | gloom | vanish | pump | Stare Down |
+| Halo | 48 | 46 | 50 | 56 | smug | calm-glow | lucky-flip | Charm |
+| Krown | 50 | 50 | 46 | 58 | smug | calm-glow | pump | Scan |
+| Midas | 46 | 48 | 50 | 56 | hustler | gust | lucky-flip | Charm |
+| Redd | 46 | 56 | 52 | 48 | fierce | scorch | lucky-flip | Laser Stare |
+
+Kits are v1 designs, tuned only for balance. Edit them to taste.
+
+## Cosmetic only
+
+Background, Skin, Side, Base, Form. Side mirrors the art so fighters face each other. Background tints the stage.
+
+## Display aliases (UI text only)
+
+Retard (eyes, any color) shows as Goofy. RETARD Cap shows as Goof Cap. Legendary names contain an em dash in the metadata (for example `CHOG #53 — Blaze`), so show them as `CHOG #53 / Blaze` and never display the em dash. Printed text inside the art cannot be changed.

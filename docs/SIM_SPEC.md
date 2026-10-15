@@ -1,6 +1,6 @@
-# ChogBound simulation spec v1.2
+# ChogBound simulation spec v1.3
 
-Status: v1.2 (v1.1 numbers plus rulings on three ambiguities, section 6.1, and a tolerance fix in section 10.7). Numbers were tuned by sensitivity runs on the 24-token sample (section 10.7). They are still not final: the full 1,969-token scan can move them. Rules change only if a test cannot be passed by tuning numbers.
+Status: v1.3. Complete trait coverage for all 1,969 Chogs (see TRAIT_MAPPING.md and trait-mapping-v2.json), effect strengths rebalanced against the full collection, Legendary 1/1 kits, and full-collection balance targets (section 10.8). Sections 5 to 6.1 keep the v1.2 rulings.
 
 Companion to `docs/TRAIT_MAPPING.md`, which defines stats, traits, and effect classes.
 
@@ -51,24 +51,24 @@ Temperament modifiers: Feisty gives +10% damage dealt in rounds 1 to 3 and -10% 
 ## 6. Trait effects in the simulation
 
 Eyes signatures (active only when selected as the plan move):
-- Laser Stare: the first action of the fight, once, auto-hit, move multiplier 1.30. After that first action it is spent: the go-to attack becomes Headbutt, exactly as for Scan, Charm, and Stare Down. It must never appear twice in one fight.
-- Scan: before round 1 the rival's plan is revealed, and your first counter (first action after being hit) deals +25%.
-- Charm: the rival's NERVE is -8 in rounds 1 to 3.
-- Stare Down: the rival's first attack has -0.15 hit chance.
-- Chaos Gaze: replaces the go-to attack. Each use is a coin flip between 1.8x damage and a miss.
+- Laser Stare: the first action of the fight, once, auto-hit, move multiplier 1.15. After that first action it is spent: the go-to attack becomes Headbutt, exactly as for Scan, Charm, and Stare Down. It must never appear twice in one fight.
+- Scan: before round 1 the rival's plan is revealed, and your first counter (first action after being hit) deals +35%.
+- Charm: the rival's NERVE is -30 in rounds 1 to 3.
+- Stare Down: the rival's first attack has -0.20 hit chance.
+- Chaos Gaze: replaces the go-to attack. Each use is a coin flip between 2.5x damage and a miss.
 
 Mouth: Underdog Pride (Sad or Flat): +6 PUNCH while behind on HP. All other Mouth classes affect narration voice only.
 
 Auras (one trigger per fight):
-- Scorch: after your first landed hit, the target loses 3 HP at the end of each of the next 2 rounds.
-- Gust: act first in round 1 and +8 SWIFT in round 1 only.
-- Vanish: the first incoming hit is dodged.
-- Calm Glow: the first time your HP drops below 40, heal 10.
+- Scorch: after your first landed hit, the target loses 2 HP at the end of each of the next 2 rounds.
+- Gust: act first in round 1, +8 SWIFT in round 1 only, and your round-1 attacks deal +30% damage.
+- Vanish: the first incoming hit is dodged with 50% probability. Whether or not the dodge succeeds, the effect is spent on that first incoming hit.
+- Calm Glow: the first time your HP drops below 40, heal 6.
 
 Accessories:
-- Pump: after your first landed hit, +8 PUNCH for the rest of the fight.
-- Lucky Flip: re-roll one miss.
-- Sidekick: each round, 20% chance of an extra 4 damage hit that cannot miss.
+- Pump: after your first landed hit, +4 PUNCH for the rest of the fight.
+- Lucky Flip: re-roll one miss, and the re-roll hits with half the normal hit chance.
+- Sidekick: each round, 12% chance of an extra 3 damage hit that cannot miss.
 - Trinket (SB and unmapped values): +4 to your lowest base stat, applied at stat calculation.
 
 ### 6.1 Rulings on ambiguities
@@ -164,9 +164,30 @@ Token 1969 (Heavy body, Vanish aura, Lucky Flip, Charm) is 2.5 points above targ
 
 Engine v1.1 as delivered measured: lowest 37.17%, highest 67.04%, standard deviation 8.82, one token outside (1969), KO rate 18.69%, lower-total wins 43.47%, and +10 in one stat winning 63.52% (GRIT), 59.75% (PUNCH), 63.85% (SWIFT), 64.40% (NERVE). All within tolerance.
 
+## 10.8 Full-collection balance (v1.3, all 1,969 Chogs)
+
+The 24-token sample in 10.7 was not representative: 91% of real Chogs had at least one trait value the v1 mapping did not know, and effects (aura, accessory, signature) dominated stats. v1.3 maps every value and rebalances.
+
+Method: random pairs of distinct tokens with random plans. v1.3 uses 400,000 pairs (about 406 fights per token, standard error about 2.5 points per token). The v1 column used 600,000 pairs (about 609 fights per token). Both are the same engine and harness apart from the changes listed.
+
+| Check | v1 numbers, partial mapping | v1.3 |
+|---|---:|---:|
+| Lowest and highest token win rate | 26.9% / 86.2% | 31.8% / 69.6% |
+| Standard deviation of token win rates | 10.2 | 6.4 |
+| Tokens outside 35 to 65% | 271 | 25 (1.3%) |
+| Tokens outside 30 to 70% | 78 | 0 |
+| KO rate | 10.9% | 19.1% |
+| Tier win rates, Common to Legendary | 45.2%, 59.6%, 56.1%, 54.3%, 42.5% (not monotonic) | 48.0%, 52.4%, 59.6%, 60.8%, 64.6% |
+
+Isolated value of one effect against a plain all-40 fighter (same Headbutt go-to plan on both sides): auras 56.5 to 59.8, accessories 55.8 to 56.5, signatures 54.0 to 55.8. Before rebalancing they ranged from 42 to 69.
+
+Targets for any conforming engine on the full collection (400,000 pairs): no token outside 30 to 70%, at most 3% outside 35 to 65%, standard deviation at most 7.5, KO rate 5 to 25%, tier win rates strictly increasing from Common to Legendary, every Body, Eyes, Head, and voice class within 45 to 56%, and every aura, accessory, and signature class within 45 to 60%.
+
+Required coverage gate: running the coverage script on the full scan must report 0 unmapped values in Body, Eyes, Head, Mouth, Aura, Accessory, and Tier.
+
 ## 11. Open items
 
-- All multipliers and thresholds are v1 placeholders.
+- Multipliers and thresholds are tuned values, not final: rerun section 10.8 after any change.
 - Wind's +8 SWIFT is a round-1 effect only and is never part of base stats.
 - Unmapped trait values use the Unknown rows in TRAIT_MAPPING. Before launch, scan metadata for all 1,969 Chogs and list every value the mapping does not cover.
 - The `RETARD` Mouth, Eyes, or Head values display through the alias table in TRAIT_MAPPING in UI text. Printed text inside the art cannot be changed.
