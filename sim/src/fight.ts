@@ -1,5 +1,5 @@
 import { createRng, normalizeSeed } from './rng.js';
-import { CRIT_CHANCE_BASE, CRIT_CHANCE_SLOPE, CRIT_MULTIPLIER, DAMAGE_COEFFICIENT, GUARD_MAX, GUARD_MIN, GUARD_SLOPE, HIT_CHANCE_BASE, HIT_CHANCE_MAX, HIT_CHANCE_MIN, HIT_CHANCE_SLOPE, MOVE_MULTIPLIERS } from './balance.config.js';
+import { CRIT_CHANCE_BASE, CRIT_CHANCE_SLOPE, CRIT_MULTIPLIER, DAMAGE_COEFFICIENT, GUARD_MAX, GUARD_MIN, GUARD_SLOPE, EFFECTS, HIT_CHANCE_BASE, HIT_CHANCE_MAX, HIT_CHANCE_MIN, HIT_CHANCE_SLOPE, MOVE_MULTIPLIERS } from './balance.config.js';
 import type { AccessoryClass, CoreMove, FightEvent, Fighter, Move, Plan, Side, SimResult, SignatureMove, Stats } from './types.js';
 
 const CORE: CoreMove[] = ['Headbutt', 'Quick Feet', 'Iron Hide'];
@@ -20,12 +20,12 @@ export function simulate(fighterA: Fighter, fighterB: Fighter, planA: Plan, plan
     events.push({ n: ++n, round, actor, action, move, outcome, damage, heal, hp_after: { a: a.hp, b: b.hp }, procs, narration_key, vars });
   };
   const afterHpChange = (target: State, targetSide: Side, round: number) => {
-    if (target.hp > 0 && !target.glowUsed && target.fighter.aura === 'calm-glow' && target.hp < 40) {
-      target.glowUsed = true; const heal = Math.min(10, 100 - target.hp); target.hp += heal;
+    if (target.hp > 0 && !target.glowUsed && target.fighter.aura === 'calm-glow' && target.hp < EFFECTS.calmGlowThreshold) {
+      target.glowUsed = true; const heal = Math.min(EFFECTS.calmGlowHeal, 100 - target.hp); target.hp += heal;
       event(round, targetSide, 'heal', 'Calm Glow', 'hit', 0, heal, ['calm-glow'], 'heal.calm-glow', { heal, hp: target.hp });
     }
   };
-  const activeStats = (state: State, round: number) => ({ ...state.stats, SWIFT: state.stats.SWIFT + (state.fighter.aura === 'gust' && round === 1 ? 8 : 0), NERVE: state.stats.NERVE - (state === a && b.activeSignature === 'Charm' || state === b && a.activeSignature === 'Charm' ? (round <= 3 ? 8 : 0) : 0), PUNCH: state.stats.PUNCH + (state.fighter.voiceClass === 'gloom' && state.hp < (state === a ? b.hp : a.hp) ? 6 : 0) });
+  const activeStats = (state: State, round: number) => ({ ...state.stats, SWIFT: state.stats.SWIFT + (state.fighter.aura === 'gust' && round === 1 ? EFFECTS.gustSwift : 0), NERVE: state.stats.NERVE - (state === a && b.activeSignature === 'Charm' || state === b && a.activeSignature === 'Charm' ? (round <= EFFECTS.charmRounds ? EFFECTS.charmNervePenalty : 0) : 0), PUNCH: state.stats.PUNCH + (state.fighter.voiceClass === 'gloom' && state.hp < (state === a ? b.hp : a.hp) ? 6 : 0) });
   const chooseMove = (state: State): CoreMove | SignatureMove => {
     // Laser Stare is the opening action for its owner, then its go-to move is Headbutt.
     if (state.activeSignature === 'Laser Stare' && !state.laserAutoUsed) return 'Laser Stare';
@@ -44,7 +44,7 @@ export function simulate(fighterA: Fighter, fighterB: Fighter, planA: Plan, plan
     const procs: string[] = []; const attackerStats = activeStats(attacker, round); const defenderStats = activeStats(defender, round);
     if (attacker.fighter.voiceClass === 'gloom' && attacker.hp < defender.hp) procs.push('underdog-pride');
     let hitChance = clamp(HIT_CHANCE_BASE + HIT_CHANCE_SLOPE * (attackerStats.SWIFT - defenderStats.SWIFT), HIT_CHANCE_MIN, HIT_CHANCE_MAX);
-    if (defender.activeSignature === 'Stare Down' && !attacker.firstAttackDone) { hitChance -= 0.15; procs.push('stare-down'); }
+    if (defender.activeSignature === 'Stare Down' && !attacker.firstAttackDone) { hitChance -= EFFECTS.stareDownHitPenalty; procs.push('stare-down'); }
     if (attacker.plan.temperament === 'Feisty' && round <= 3) procs.push('feisty');
     if (attacker.plan.temperament === 'Feisty' && round >= 6) procs.push('feisty-fatigue');
     let actualMove: FightEvent['move'] = isSidekick ? 'Headbutt' : move; let multiplier = isSidekick ? 1 : MULTIPLIER[move];
@@ -56,11 +56,13 @@ export function simulate(fighterA: Fighter, fighterB: Fighter, planA: Plan, plan
     let hit = isSidekick || (move === 'Laser Stare' && !attacker.laserAutoUsed) || rng.chance(hitChance);
     if (move === 'Laser Stare' && !attacker.laserAutoUsed) { attacker.laserAutoUsed = true; procs.push('laser-auto-hit'); hit = true; }
     if (!isSidekick && defender.fighter.aura === 'vanish' && !defender.firstIncomingDodged) {
-      if (move === 'Laser Stare' && !attacker.laserDodgeIgnoreUsed) { defender.firstIncomingDodged = true; attacker.laserDodgeIgnoreUsed = true; procs.push('laser-ignores-vanish'); }
-      else { defender.firstIncomingDodged = true; hit = false; procs.push('vanish'); event(round, actor, 'attack', actualMove, 'dodge', 0, 0, procs, 'attack.dodge', {}); attacker.firstAttackDone = true; return; }
+      // The effect is spent on the first incoming hit whether or not the dodge succeeds (SIM_SPEC section 6).
+      defender.firstIncomingDodged = true;
+      if (move === 'Laser Stare' && !attacker.laserDodgeIgnoreUsed) { attacker.laserDodgeIgnoreUsed = true; procs.push('laser-ignores-vanish'); }
+      else if (rng.chance(EFFECTS.vanishDodgeChance)) { hit = false; procs.push('vanish'); event(round, actor, 'attack', actualMove, 'dodge', 0, 0, procs, 'attack.dodge', {}); attacker.firstAttackDone = true; return; }
     }
-    if (!hit && move !== 'Chaos Gaze' && attacker.fighter.accessory === 'lucky-flip' && !attacker.luckyFlipUsed) { attacker.luckyFlipUsed = true; procs.push('lucky-flip'); hit = rng.chance(hitChance); }
-    if (move === 'Chaos Gaze') { const chaosHit = rng.chance(0.5); hit = chaosHit; multiplier = MOVE_MULTIPLIERS['Chaos Gaze']; procs.push(chaosHit ? 'chaos-gaze-boost' : 'chaos-gaze-miss'); }
+    if (!hit && move !== 'Chaos Gaze' && attacker.fighter.accessory === 'lucky-flip' && !attacker.luckyFlipUsed) { attacker.luckyFlipUsed = true; procs.push('lucky-flip'); hit = rng.chance(hitChance * EFFECTS.luckyFlipHitFactor); }
+    if (move === 'Chaos Gaze') { const chaosHit = rng.chance(EFFECTS.chaosGazeHitChance); hit = chaosHit; multiplier = MOVE_MULTIPLIERS['Chaos Gaze']; procs.push(chaosHit ? 'chaos-gaze-boost' : 'chaos-gaze-miss'); }
     attacker.firstAttackDone = true;
     if (!hit) { event(round, actor, 'attack', actualMove, 'miss', 0, 0, procs, 'attack.miss', { attacker: attacker.fighter.name, target: defender.fighter.name }); return; }
     const statName = isSidekick ? 'PUNCH' : MOVE_STAT[move as CoreMove] ?? 'PUNCH'; let attackStat = attackerStats[statName];
@@ -72,14 +74,15 @@ export function simulate(fighterA: Fighter, fighterB: Fighter, planA: Plan, plan
     let guard = clamp(GUARD_SLOPE * (defenderStats.GRIT - 40), GUARD_MIN, GUARD_MAX); if (defender.ironGuard > 0) { guard = 1 - (1 - guard) * 0.8; defender.ironGuard--; procs.push('iron-hide'); }
     let damageFactor = 1; if (attacker.plan.temperament === 'Feisty') damageFactor *= round <= 3 ? 1.1 : round >= 6 ? 0.9 : 1;
     if (defender.plan.temperament === 'Cool' && round <= 3) damageFactor *= 0.9;
-    if (scanCounter) damageFactor *= 1.25;
+    if (scanCounter) damageFactor *= EFFECTS.scanCounterMultiplier;
+    if (attacker.fighter.aura === 'gust' && round === 1) { damageFactor *= EFFECTS.gustRound1Damage; procs.push('gust-surge'); }
     const raw = attackStat * DAMAGE_COEFFICIENT * multiplier * (1 + variance) * (1 - guard) * (crit ? CRIT_MULTIPLIER : 1) * damageFactor;
     const damage = roundDamage(raw); if (crit) procs.push('crit');
     const dealt = Math.min(defender.hp, damage); defender.hp -= dealt;
     event(round, actor, 'attack', actualMove, crit ? 'crit' : 'hit', dealt, 0, procs, crit ? 'attack.crit' : `hit.${String(actualMove).toLowerCase().replaceAll(' ','-')}`, { damage: dealt, target_hp: defender.hp, attacker: attacker.fighter.name, target: defender.fighter.name });
     if (dealt > 0) { defender.hitTaken = true; if (defender.plan.temperament === 'Cool' && !defender.coolBonusUsed) defender.coolBonusPending = true; }
-    if (!attacker.pumpUsed && attacker.fighter.accessory === 'pump' && dealt > 0) { attacker.pumpUsed = true; attacker.stats.PUNCH += 8; procs.push('pump'); }
-    if (!attacker.scorchTriggered && attacker.fighter.aura === 'scorch' && dealt > 0) { attacker.scorchTriggered = true; attacker.scorchRounds = [round + 1, round + 2]; procs.push('scorch-armed'); }
+    if (!attacker.pumpUsed && attacker.fighter.accessory === 'pump' && dealt > 0) { attacker.pumpUsed = true; attacker.stats.PUNCH += EFFECTS.pumpPunch; procs.push('pump'); }
+    if (!attacker.scorchTriggered && attacker.fighter.aura === 'scorch' && dealt > 0) { attacker.scorchTriggered = true; attacker.scorchRounds = [round + 1, round + EFFECTS.scorchRounds]; procs.push('scorch-armed'); }
     afterHpChange(defender, targetSide, round);
     if (defender.hp <= 0) { finished = true; ko = true; }
   };
@@ -102,13 +105,13 @@ export function simulate(fighterA: Fighter, fighterB: Fighter, planA: Plan, plan
       if (finished) break;
       if (self.fighter.accessory === 'sidekick' && self.sidekickUsedRound !== round) {
         self.sidekickUsedRound = round;
-        if (rng.chance(0.20)) { const amount = Math.min(rival.hp, 4); rival.hp -= amount; const sidekickProcs = ['sidekick']; event(round, selfSide, 'attack', 'Headbutt', 'hit', amount, 0, sidekickProcs, 'accessory.sidekick', { damage: amount, target_hp: rival.hp }); rival.hitTaken = true; if (rival.plan.temperament === 'Cool' && !rival.coolBonusUsed) rival.coolBonusPending = true; if (!self.scorchTriggered && self.fighter.aura === 'scorch' && amount > 0) { self.scorchTriggered = true; self.scorchRounds = [round + 1, round + 2]; sidekickProcs.push('scorch-armed'); } afterHpChange(rival, rivalSide, round); if (rival.hp <= 0) { finished = true; ko = true; } }
+        if (rng.chance(EFFECTS.sidekickChance)) { const amount = Math.min(rival.hp, EFFECTS.sidekickDamage); rival.hp -= amount; const sidekickProcs = ['sidekick']; event(round, selfSide, 'attack', 'Headbutt', 'hit', amount, 0, sidekickProcs, 'accessory.sidekick', { damage: amount, target_hp: rival.hp }); rival.hitTaken = true; if (rival.plan.temperament === 'Cool' && !rival.coolBonusUsed) rival.coolBonusPending = true; if (!self.scorchTriggered && self.fighter.aura === 'scorch' && amount > 0) { self.scorchTriggered = true; self.scorchRounds = [round + 1, round + EFFECTS.scorchRounds]; sidekickProcs.push('scorch-armed'); } afterHpChange(rival, rivalSide, round); if (rival.hp <= 0) { finished = true; ko = true; } }
       }
     }
     if (finished) break;
     // Scorch damage resolves after both fighters act, and starts on the two rounds after the trigger hit.
     for (const [source, sourceSide, target, targetSide] of [[a,'a',b,'b'],[b,'b',a,'a']] as const) {
-      if (source.scorchRounds.includes(round) && target.hp > 0) { const amount = Math.min(3, target.hp); target.hp -= amount; event(round, sourceSide, 'burn', 'Scorch', 'hit', amount, 0, ['scorch'], 'aura.scorch', { damage: amount, target_hp: target.hp }); afterHpChange(target, targetSide, round); if (target.hp <= 0) { finished = true; ko = true; break; } }
+      if (source.scorchRounds.includes(round) && target.hp > 0) { const amount = Math.min(EFFECTS.scorchDamage, target.hp); target.hp -= amount; event(round, sourceSide, 'burn', 'Scorch', 'hit', amount, 0, ['scorch'], 'aura.scorch', { damage: amount, target_hp: target.hp }); afterHpChange(target, targetSide, round); if (target.hp <= 0) { finished = true; ko = true; break; } }
     }
   }
   const winner: Side = a.hp === b.hp ? (a.stats.NERVE === b.stats.NERVE ? (rng.chance(0.5) ? 'a' : 'b') : a.stats.NERVE > b.stats.NERVE ? 'a' : 'b') : a.hp > b.hp ? 'a' : 'b';

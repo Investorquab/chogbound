@@ -1,6 +1,6 @@
-# ChogBound simulation engine v1.2
+# ChogBound simulation engine v1.3
 
-Deterministic, headless TypeScript combat simulation based on `docs/TRAIT_MAPPING.md`, `docs/SIM_SPEC.md` v1.2, and the repository-root `traits.json`. The package contains no UI, wallet code, or contracts. Node.js 18+ is required; Vitest, TypeScript, and `tsx` are development-only tools.
+Deterministic, headless TypeScript combat simulation based on `docs/TRAIT_MAPPING.md`, `docs/SIM_SPEC.md` v1.3, and the repository-root `traits.json` (24-token cast) and `traits.full.json` (all 1,969 Chogs). The package contains no UI, wallet code, or contracts. Node.js 18+ is required; Vitest, TypeScript, and `tsx` are development-only tools.
 
 ## Install and run
 
@@ -10,23 +10,31 @@ Run from this `sim/` directory:
 npm install
 npm test
 npm run typecheck
-npm run balance
 npm run coverage
-npm run balance:full -- ../traits.json 200
+npm run balance:full
+npm run effect-value
+npm run balance
 npm run fight -- 1 24 --a-temperament Wild --a-move "Laser Stare" --seed 42
 ```
 
-All scripts default to the repository-root `traits.json`; an alternate metadata path can be supplied as the first argument. `balance-full.ts` accepts the fight count as its second argument and defaults to 20,000 random pairs.
+- `npm run coverage` is the v1.3 gate: it reads `../traits.full.json` and fails (exit code 1) if any Body, Eyes, Head, Mouth, Aura, Accessory, Tier, or Legendary kit value is not in the mapping.
+- `npm run balance:full` simulates 400,000 random pairs over all 1,969 Chogs and prints the SIM_SPEC 10.8 targets as PASS or FAIL. Optional arguments: `-- <traitsPath> <pairs>`. At 400,000 pairs each token has about 406 fights, so a single token can land about 2.5 points away from its true win rate; use 2,000,000 pairs (about 50 seconds) to confirm a borderline token.
+- `npm run effect-value` measures each aura, accessory, and signature alone against a plain all-40 fighter. It is a report, not a gate.
+- `npm run balance` and `npm run fight` still default to the 24-token `traits.json`.
+
+## Trait mapping data
+
+All trait numbers come from `src/trait-mapping-v2.json`, which must stay byte-identical (ignoring line endings) to `docs/trait-mapping-v2.json`; a test enforces this. To change a number, edit the docs copy, copy it over `src/trait-mapping-v2.json`, and rerun `npm test` and `npm run balance:full`. Effect strengths live in `src/balance.config.ts` (`EFFECTS`) and a test checks they match the JSON `effects` section.
 
 ## Balance constants
 
-`src/balance.config.ts` centralizes the v1.1 tunables from SIM_SPEC section 5:
+`src/balance.config.ts` centralizes the tunables from SIM_SPEC sections 5 and 6 (v1.3):
 
 - Damage coefficient: `0.204`.
 - Hit chance: base `0.85`, SWIFT slope `0.0016`, clamp `0.60`–`0.95` before signature modifiers.
 - Guard: GRIT slope `0.0036`, clamp `-0.10`–`0.28`.
 - Crit chance: base `0.05`, NERVE slope `0.0161`; crit multiplier `1.75`.
-- Move multipliers: Headbutt `1.32`, Quick Feet `0.68`, Iron Hide `0.85`, Laser Stare `1.30`, Chaos Gaze `1.8`.
+- Move multipliers: Headbutt `1.32`, Quick Feet `0.68`, Iron Hide `0.85`, Laser Stare `1.15`, Chaos Gaze `2.5`. Effect strengths (Scorch, Vanish, Calm Glow, Gust, Pump, Lucky Flip, Sidekick, Scan, Charm, Stare Down) are in the `EFFECTS` object.
 
 The implementation does not auto-tune constants. A failed benchmark is reported as a mismatch, not “fixed” by changing the requested values.
 

@@ -13,7 +13,8 @@
     "balance": "tsx scripts/balance.ts",
     "coverage": "tsx scripts/coverage.ts",
     "balance:full": "tsx scripts/balance-full.ts",
-    "fight": "tsx scripts/run-fight.ts"
+    "fight": "tsx scripts/run-fight.ts",
+    "effect-value": "tsx scripts/effect-value.ts"
   },
   "devDependencies": {
     "@types/node": "^20.17.0",

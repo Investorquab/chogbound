@@ -49,4 +49,4 @@ export type FightSummary = {
 };
 export type SimResult = { events: FightEvent[]; summary: FightSummary };
 export type TraitBonus = { stat: StatName; amount: number; trait: string; value: string; reason: string };
-export type StatResult = { stats: Stats; bonuses: TraitBonus[]; classes: { body: string; eyes: string; head: string; mouth: VoiceClass; aura: AuraClass; accessory: AccessoryClass } };
+export type StatResult = { stats: Stats; bonuses: TraitBonus[]; classes: { body: string; eyes: string; head: string; mouth: VoiceClass; aura: AuraClass; accessory: AccessoryClass }; signature: SignatureMove | null; legendaryKit?: string };

@@ -22,6 +22,8 @@ jobs:
         run: npm install
       - name: Run simulation engine tests
         run: npm run test:engine
+      - name: Check trait mapping covers every Chog
+        run: npm run coverage --workspace=chogbound-sim
       - name: Build web app
         run: npm run build
       - name: Install Playwright Chromium

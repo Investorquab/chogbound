@@ -1,0 +1,1711 @@
+{
+ "version": "v2",
+ "note": "Machine-readable trait mapping. Every value found in the full 1,969-token scan is listed. Numbers are post-balancing (SIM_SPEC v1.3).",
+ "tier": {
+  "Common": 0,
+  "Uncommon": 1,
+  "Rare": 2,
+  "Epic": 3,
+  "Legendary": "kit"
+ },
+ "bare": {
+  "SWIFT": 12,
+  "GRIT": -2,
+  "NERVE": 2
+ },
+ "noHead": {
+  "SWIFT": 4,
+  "NERVE": 4
+ },
+ "body": {
+  "Squid Game Guard": {
+   "cls": "Heavy",
+   "bonuses": {
+    "GRIT": 16,
+    "SWIFT": -6
+   }
+  },
+  "Dragon suit": {
+   "cls": "Heavy",
+   "bonuses": {
+    "GRIT": 16,
+    "SWIFT": -6
+   }
+  },
+  "Astro Suit": {
+   "cls": "Heavy",
+   "bonuses": {
+    "GRIT": 16,
+    "SWIFT": -6
+   }
+  },
+  "dark jacket": {
+   "cls": "Heavy",
+   "bonuses": {
+    "GRIT": 16,
+    "SWIFT": -6
+   }
+  },
+  "Red jacket": {
+   "cls": "Heavy",
+   "bonuses": {
+    "GRIT": 16,
+    "SWIFT": -6
+   }
+  },
+  "dark tee": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Red Sleeveless": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Hawaiian Polo": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Black Trackset": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Brown Homeless Shirt": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Yellow Yukata": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Yellow 143 Jersey": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Blue 143 Jersey": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "dark vest": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "pink vest": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "purple vest": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Cream Tuxedo": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Pink Tuxedo": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Banana suit": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Jesus": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Golden Armor": {
+   "cls": "Heavy",
+   "bonuses": {
+    "GRIT": 16,
+    "SWIFT": -6
+   }
+  },
+  "Army Vest": {
+   "cls": "Heavy",
+   "bonuses": {
+    "GRIT": 16,
+    "SWIFT": -6
+   }
+  },
+  "Shark Suit": {
+   "cls": "Heavy",
+   "bonuses": {
+    "GRIT": 16,
+    "SWIFT": -6
+   }
+  },
+  "Sci Fi": {
+   "cls": "Heavy",
+   "bonuses": {
+    "GRIT": 16,
+    "SWIFT": -6
+   }
+  },
+  "Blue jacket": {
+   "cls": "Heavy",
+   "bonuses": {
+    "GRIT": 16,
+    "SWIFT": -6
+   }
+  },
+  "Blue Holed Jacket": {
+   "cls": "Heavy",
+   "bonuses": {
+    "GRIT": 16,
+    "SWIFT": -6
+   }
+  },
+  "Orange Holed Jacket": {
+   "cls": "Heavy",
+   "bonuses": {
+    "GRIT": 16,
+    "SWIFT": -6
+   }
+  },
+  "Electro Hoodie": {
+   "cls": "Heavy",
+   "bonuses": {
+    "GRIT": 16,
+    "SWIFT": -6
+   }
+  },
+  "Glitch Hoodie": {
+   "cls": "Heavy",
+   "bonuses": {
+    "GRIT": 16,
+    "SWIFT": -6
+   }
+  },
+  "Mon Hoodie": {
+   "cls": "Heavy",
+   "bonuses": {
+    "GRIT": 16,
+    "SWIFT": -6
+   }
+  },
+  "Orange Hoodie": {
+   "cls": "Heavy",
+   "bonuses": {
+    "GRIT": 16,
+    "SWIFT": -6
+   }
+  },
+  "Peach Hoodie": {
+   "cls": "Heavy",
+   "bonuses": {
+    "GRIT": 16,
+    "SWIFT": -6
+   }
+  },
+  "Sky Hoodie": {
+   "cls": "Heavy",
+   "bonuses": {
+    "GRIT": 16,
+    "SWIFT": -6
+   }
+  },
+  "Yellow Hoodie": {
+   "cls": "Heavy",
+   "bonuses": {
+    "GRIT": 16,
+    "SWIFT": -6
+   }
+  },
+  "Tuxedo": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Red Tuxedo": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "White tuxedo": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Aqua Tuxedo": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Blue tuxedo": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Cyan tuxedo": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Gangster suit": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Blue Mafia": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "CEO Vest": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Kings Robe": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Jesus Robe": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Wizard": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Wizard Cape": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Duck Float": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "toad blue suit": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Toad green Suit": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Toad pink suit": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Mummy": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Blue Chinese": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Red Chinese": {
+   "cls": "Showy",
+   "bonuses": {
+    "NERVE": 12,
+    "GRIT": 4
+   }
+  },
+  "Black Shirt": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Black Vest": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Blue Homeless Shirt": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Blue Sleeveless": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "blue tee": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Boner": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "BBC": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Chug Life": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "CWO": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Cyan Shirt": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Farmer Shirt": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Fire Shirt": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Gojo": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Grey Homeless Shirt": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Grey Shirt": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Guko": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "MILF Lover": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Orange Sleeveless": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Pink Shirt": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Purple Shirt": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Purple Tank": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Red 143 Jersey": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Red shirt": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "red tee": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Red Trackset": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Six Seven": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Squid Game": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Stripe Shirt": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Stripe shirts": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Stripes": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Tank Top": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Virgin": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "White Pure Shirt": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "White Shirt": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "White Sleeveless": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "White Tank": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "white tee": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "White Yukata": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Yellow Shirt": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Zero THOTS": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Inmate": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  },
+  "Prisoner": {
+   "cls": "Light",
+   "bonuses": {
+    "SWIFT": 14,
+    "GRIT": -4
+   }
+  }
+ },
+ "eyes": {
+  "fire laser": {
+   "cls": "Laser",
+   "punch": 11,
+   "signature": "Laser Stare"
+  },
+  "Green laser": {
+   "cls": "Laser",
+   "punch": 11,
+   "signature": "Laser Stare"
+  },
+  "cyan laser": {
+   "cls": "Laser",
+   "punch": 11,
+   "signature": "Laser Stare"
+  },
+  "Purple laser": {
+   "cls": "Laser",
+   "punch": 11,
+   "signature": "Laser Stare"
+  },
+  "BTC Glass": {
+   "cls": "Tech",
+   "punch": 9,
+   "signature": "Scan"
+  },
+  "3D Glass": {
+   "cls": "Tech",
+   "punch": 9,
+   "signature": "Scan"
+  },
+  "Modern VR": {
+   "cls": "Tech",
+   "punch": 9,
+   "signature": "Scan"
+  },
+  "Anime Glass": {
+   "cls": "Tech",
+   "punch": 9,
+   "signature": "Scan"
+  },
+  "Heart": {
+   "cls": "Charm",
+   "punch": 8,
+   "signature": "Charm"
+  },
+  "Happy": {
+   "cls": "Charm",
+   "punch": 8,
+   "signature": "Charm"
+  },
+  "Smirk": {
+   "cls": "Charm",
+   "punch": 8,
+   "signature": "Charm"
+  },
+  "XD": {
+   "cls": "Charm",
+   "punch": 8,
+   "signature": "Charm"
+  },
+  "Round Tear": {
+   "cls": "Charm",
+   "punch": 8,
+   "signature": "Charm"
+  },
+  "Thug": {
+   "cls": "Intimidate",
+   "punch": 10,
+   "signature": "Stare Down"
+  },
+  "Side Eye": {
+   "cls": "Intimidate",
+   "punch": 10,
+   "signature": "Stare Down"
+  },
+  "Dead": {
+   "cls": "Intimidate",
+   "punch": 10,
+   "signature": "Stare Down"
+  },
+  "Vertical": {
+   "cls": "Intimidate",
+   "punch": 10,
+   "signature": "Stare Down"
+  },
+  "MOG": {
+   "cls": "Intimidate",
+   "punch": 10,
+   "signature": "Stare Down"
+  },
+  "Retard": {
+   "cls": "Wild",
+   "punch": 10,
+   "signature": "Chaos Gaze"
+  },
+  "Base": {
+   "cls": "Neutral",
+   "punch": 9,
+   "signature": null
+  },
+  "Round Eye": {
+   "cls": "Neutral",
+   "punch": 9,
+   "signature": null
+  },
+  "Gradient visor": {
+   "cls": "Tech",
+   "punch": 9,
+   "signature": "Scan"
+  },
+  "Sunset visor": {
+   "cls": "Tech",
+   "punch": 9,
+   "signature": "Scan"
+  },
+  "Plasma visor": {
+   "cls": "Tech",
+   "punch": 9,
+   "signature": "Scan"
+  },
+  "Retro Glass": {
+   "cls": "Tech",
+   "punch": 9,
+   "signature": "Scan"
+  },
+  "Classic VR": {
+   "cls": "Tech",
+   "punch": 9,
+   "signature": "Scan"
+  },
+  "Round Crying": {
+   "cls": "Charm",
+   "punch": 8,
+   "signature": "Charm"
+  },
+  "Closed Eye Crying": {
+   "cls": "Charm",
+   "punch": 8,
+   "signature": "Charm"
+  },
+  "Teary": {
+   "cls": "Charm",
+   "punch": 8,
+   "signature": "Charm"
+  },
+  "Worried": {
+   "cls": "Charm",
+   "punch": 8,
+   "signature": "Charm"
+  },
+  "Frog": {
+   "cls": "Charm",
+   "punch": 8,
+   "signature": "Charm"
+  },
+  "Green Happy": {
+   "cls": "Charm",
+   "punch": 8,
+   "signature": "Charm"
+  },
+  "Mixed Happy": {
+   "cls": "Charm",
+   "punch": 8,
+   "signature": "Charm"
+  },
+  "Blue Happy": {
+   "cls": "Charm",
+   "punch": 8,
+   "signature": "Charm"
+  },
+  "Blue Smirk": {
+   "cls": "Charm",
+   "punch": 8,
+   "signature": "Charm"
+  },
+  "Green Smirk": {
+   "cls": "Charm",
+   "punch": 8,
+   "signature": "Charm"
+  },
+  "Angry": {
+   "cls": "Intimidate",
+   "punch": 10,
+   "signature": "Stare Down"
+  },
+  "Tired": {
+   "cls": "Intimidate",
+   "punch": 10,
+   "signature": "Stare Down"
+  },
+  "Chog Viper": {
+   "cls": "Intimidate",
+   "punch": 10,
+   "signature": "Stare Down"
+  },
+  "Green Side Eye": {
+   "cls": "Intimidate",
+   "punch": 10,
+   "signature": "Stare Down"
+  },
+  "Mixed Side Eye": {
+   "cls": "Intimidate",
+   "punch": 10,
+   "signature": "Stare Down"
+  },
+  "Clown Eye": {
+   "cls": "Wild",
+   "punch": 10,
+   "signature": "Chaos Gaze"
+  },
+  "Clown Eye Mix": {
+   "cls": "Wild",
+   "punch": 10,
+   "signature": "Chaos Gaze"
+  },
+  "Blue Retard": {
+   "cls": "Wild",
+   "punch": 10,
+   "signature": "Chaos Gaze"
+  },
+  "Mixed Retard": {
+   "cls": "Wild",
+   "punch": 10,
+   "signature": "Chaos Gaze"
+  },
+  "Green Retard": {
+   "cls": "Wild",
+   "punch": 10,
+   "signature": "Chaos Gaze"
+  },
+  "Red Retard": {
+   "cls": "Wild",
+   "punch": 10,
+   "signature": "Chaos Gaze"
+  },
+  "Round": {
+   "cls": "Neutral",
+   "punch": 9,
+   "signature": null
+  },
+  "Normal Eye": {
+   "cls": "Neutral",
+   "punch": 9,
+   "signature": null
+  },
+  "Normal": {
+   "cls": "Neutral",
+   "punch": 9,
+   "signature": null
+  },
+  "Flat": {
+   "cls": "Neutral",
+   "punch": 9,
+   "signature": null
+  },
+  "Red Round Eye": {
+   "cls": "Neutral",
+   "punch": 9,
+   "signature": null
+  },
+  "Blue Round Eye": {
+   "cls": "Neutral",
+   "punch": 9,
+   "signature": null
+  },
+  "Green Round Eye": {
+   "cls": "Neutral",
+   "punch": 9,
+   "signature": null
+  },
+  "Mixed Round Eye": {
+   "cls": "Neutral",
+   "punch": 9,
+   "signature": null
+  },
+  "Red Flat": {
+   "cls": "Neutral",
+   "punch": 9,
+   "signature": null
+  },
+  "Blue Flat": {
+   "cls": "Neutral",
+   "punch": 9,
+   "signature": null
+  },
+  "Up": {
+   "cls": "Neutral",
+   "punch": 9,
+   "signature": null
+  }
+ },
+ "head": {
+  "MCGA": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "MCGA Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "TISM Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Blue Bucket Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Gray Bucket Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "BTC Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "BTC Beanie": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Mon Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "RETARD Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Dollar Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "JEET Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Chog Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Plumber": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Robber": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Red Headband": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Durag": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Rainbow Wig": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Balls Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Horny Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Choggie Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Cloud Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Boob Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "BOOB Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Orange Bucket Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Thunder Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Star Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Red Peace Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Peace Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "MMGA Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Buttcoin Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "10k TPS Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "WAGMI Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "ETH Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Jeet Cap": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Wizard Beanie": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Choggie Beanie": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "RH Beanie": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Mon Beanie": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "8 Ball Beanie": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Crown": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Spartan Helmet": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Silver wreath": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Holy Seal": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Diamond": {
+   "cls": "Cap",
+   "bonuses": {
+    "NERVE": 8
+   }
+  },
+  "Russian Hat": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Wizard Hat": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Peace hat": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Mafia Hat": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Bob Hair": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "NEET": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Japan Headband": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Red Bandana": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Head Wrap": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Clown Nose": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Taped Banana": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Poison Shroom": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "3rd Eye": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Blue Laser": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "MEGA Chog": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Red Horn": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Purple Horn": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Void Horn": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Demon Horn": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "devil horn": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Gold Thorn": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  },
+  "Silver Thorn": {
+   "cls": "Style",
+   "bonuses": {
+    "SWIFT": 6,
+    "NERVE": 4
+   }
+  }
+ },
+ "mouth": {
+  "Grit": {
+   "voice": "fierce",
+   "nerve": 4
+  },
+  "Smile": {
+   "voice": "smug",
+   "nerve": 3
+  },
+  "normal smile": {
+   "voice": "smug",
+   "nerve": 3
+  },
+  "Gold Tooth": {
+   "voice": "smug",
+   "nerve": 3
+  },
+  "Clown Mouth": {
+   "voice": "smug",
+   "nerve": 3
+  },
+  "BTC Coin": {
+   "voice": "hustler",
+   "nerve": 2
+  },
+  "Mon coin": {
+   "voice": "hustler",
+   "nerve": 2
+  },
+  "Drooling": {
+   "voice": "hungry",
+   "nerve": 2
+  },
+  "Bubblegum": {
+   "voice": "hungry",
+   "nerve": 2
+  },
+  "Lip Bite": {
+   "voice": "hungry",
+   "nerve": 2
+  },
+  "Sad": {
+   "voice": "gloom",
+   "nerve": 0
+  },
+  "Flat": {
+   "voice": "gloom",
+   "nerve": 0
+  },
+  "wo": {
+   "voice": "neutral",
+   "nerve": 2
+  },
+  "Rainbow Puke": {
+   "voice": "hungry",
+   "nerve": 2
+  },
+  "Worried": {
+   "voice": "gloom",
+   "nerve": 0
+  }
+ },
+ "aura": {
+  "Fire": "scorch",
+  "Burning Aura": "scorch",
+  "Wind": "gust",
+  "Smoke": "vanish",
+  "Aqua Aura": "calm-glow",
+  "Mint": "calm-glow",
+  "Light Purple": "calm-glow",
+  "Fiery Aura": "scorch",
+  "Electric Shock": "scorch",
+  "Cool Aura": "gust",
+  "Yellow Aura": "gust",
+  "Pink Mist": "vanish",
+  "Clean": "vanish",
+  "White Aura": "vanish",
+  "Purple": "calm-glow",
+  "Violet": "calm-glow",
+  "Rose Aura": "calm-glow",
+  "Rose Scent": "calm-glow",
+  "Royal Blue Aura": "calm-glow",
+  "Royal Blue": "calm-glow",
+  "Royal Aura": "calm-glow",
+  "Green Aura": "calm-glow"
+ },
+ "accessory": {
+  "Green Candle": "pump",
+  "Coin": "lucky-flip",
+  "Fwog": "sidekick",
+  "SB": "trinket",
+  "Cigar": "lucky-flip",
+  "Heart": "trinket",
+  "Red Candle": "trinket",
+  "Knife": "pump",
+  "PEPE": "sidekick"
+ },
+ "legendaryKits": {
+  "Blaze": {
+   "stats": {
+    "GRIT": 44,
+    "PUNCH": 56,
+    "SWIFT": 50,
+    "NERVE": 50
+   },
+   "voice": "fierce",
+   "aura": "scorch",
+   "accessory": "pump",
+   "signature": "Laser Stare"
+  },
+  "Burning Skully": {
+   "stats": {
+    "GRIT": 50,
+    "PUNCH": 54,
+    "SWIFT": 44,
+    "NERVE": 52
+   },
+   "voice": "gloom",
+   "aura": "scorch",
+   "accessory": "sidekick",
+   "signature": "Chaos Gaze"
+  },
+  "Chog Scream": {
+   "stats": {
+    "GRIT": 46,
+    "PUNCH": 52,
+    "SWIFT": 48,
+    "NERVE": 54
+   },
+   "voice": "fierce",
+   "aura": "gust",
+   "accessory": "lucky-flip",
+   "signature": "Stare Down"
+  },
+  "Chogbomination": {
+   "stats": {
+    "GRIT": 58,
+    "PUNCH": 54,
+    "SWIFT": 38,
+    "NERVE": 48
+   },
+   "voice": "hungry",
+   "aura": "calm-glow",
+   "accessory": "sidekick",
+   "signature": "Chaos Gaze"
+  },
+  "Frogger": {
+   "stats": {
+    "GRIT": 42,
+    "PUNCH": 46,
+    "SWIFT": 60,
+    "NERVE": 52
+   },
+   "voice": "hustler",
+   "aura": "gust",
+   "accessory": "sidekick",
+   "signature": "Scan"
+  },
+  "Grim": {
+   "stats": {
+    "GRIT": 52,
+    "PUNCH": 50,
+    "SWIFT": 46,
+    "NERVE": 52
+   },
+   "voice": "gloom",
+   "aura": "vanish",
+   "accessory": "pump",
+   "signature": "Stare Down"
+  },
+  "Halo": {
+   "stats": {
+    "GRIT": 48,
+    "PUNCH": 46,
+    "SWIFT": 50,
+    "NERVE": 56
+   },
+   "voice": "smug",
+   "aura": "calm-glow",
+   "accessory": "lucky-flip",
+   "signature": "Charm"
+  },
+  "Krown": {
+   "stats": {
+    "GRIT": 50,
+    "PUNCH": 50,
+    "SWIFT": 46,
+    "NERVE": 58
+   },
+   "voice": "smug",
+   "aura": "calm-glow",
+   "accessory": "pump",
+   "signature": "Scan"
+  },
+  "Midas": {
+   "stats": {
+    "GRIT": 46,
+    "PUNCH": 48,
+    "SWIFT": 50,
+    "NERVE": 56
+   },
+   "voice": "hustler",
+   "aura": "gust",
+   "accessory": "lucky-flip",
+   "signature": "Charm"
+  },
+  "Redd": {
+   "stats": {
+    "GRIT": 46,
+    "PUNCH": 56,
+    "SWIFT": 52,
+    "NERVE": 48
+   },
+   "voice": "fierce",
+   "aura": "scorch",
+   "accessory": "lucky-flip",
+   "signature": "Laser Stare"
+  }
+ },
+ "legendaryRule": "Token has Base '1:1' and Tier 'Legendary'. Look the kit up by the text after the em dash in the metadata name. Stats are final (no tier bonus added).",
+ "effects": {
+  "scorch": {
+   "burn_hp_per_round": 2,
+   "rounds": 2,
+   "trigger": "after your first landed hit"
+  },
+  "vanish": {
+   "dodge_probability": 0.5,
+   "trigger": "first incoming hit; Laser Stare ignores and consumes it"
+  },
+  "calm-glow": {
+   "heal_hp": 6,
+   "trigger": "first time HP drops below 40"
+  },
+  "gust": {
+   "round1_swift": 8,
+   "acts_first_round1": true,
+   "round1_damage_multiplier": 1.3
+  },
+  "pump": {
+   "punch_bonus": 4,
+   "trigger": "after your first landed hit"
+  },
+  "lucky-flip": {
+   "reroll_hit_chance_multiplier": 0.5,
+   "uses": 1,
+   "not_for": "Chaos Gaze"
+  },
+  "sidekick": {
+   "chance_per_round": 0.12,
+   "damage": 3,
+   "cannot_miss": true
+  },
+  "trinket": {
+   "lowest_stat_bonus": 4
+  },
+  "signatures": {
+   "Laser Stare": {
+    "multiplier": 1.15,
+    "first_action_only": true,
+    "auto_hit": true
+   },
+   "Scan": {
+    "counter_damage_multiplier": 1.35
+   },
+   "Charm": {
+    "rival_nerve_penalty": 30,
+    "rounds": "1-3"
+   },
+   "Stare Down": {
+    "rival_first_attack_hit_penalty": 0.2
+   },
+   "Chaos Gaze": {
+    "coin_flip": 0.5,
+    "multiplier": 2.5
+   }
+  }
+ },
+ "eyes_punch_by_class": {
+  "Laser": 11,
+  "Tech": 9,
+  "Charm": 8,
+  "Intimidate": 10,
+  "Wild": 10,
+  "Neutral": 9
+ },
+ "mouth_nerve_by_voice": {
+  "fierce": 4,
+  "smug": 3,
+  "hustler": 2,
+  "hungry": 2,
+  "gloom": 0,
+  "neutral": 2
+ },
+ "display_aliases": {
+  "Retard": "Goofy",
+  "RETARD Cap": "Goof Cap",
+  "Retard Eyes (all colors)": "Goofy",
+  "name_em_dash": "Show legendary names as 'CHOG #53 / Blaze' or 'Blaze (#53)'. Never display an em dash."
+ }
+}

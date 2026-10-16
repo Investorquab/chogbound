@@ -1,54 +1,56 @@
-import { resolve } from 'node:path';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { loadTraits } from '../src/traits.js';
-import { fighterFromToken } from '../src/stats.js';
-import { simulate } from '../src/fight.js';
-import { createRng } from '../src/rng.js';
-import type { Fighter, Move, Plan, TraitAttribute } from '../src/types.js';
+import { buildEntries, runBalance } from '../src/harness.js';
+import type { TraitAttribute } from '../src/types.js';
 
-const traitsPath = process.argv[2] ? resolve(process.argv[2]) : undefined;
-const requestedPairs = Number.parseInt(process.argv[3] ?? '20000', 10);
-if (!Number.isSafeInteger(requestedPairs) || requestedPairs < 1) throw new Error('N must be a positive integer');
+// Usage: npm run balance:full -- [traitsPath] [pairs]   (defaults: ../traits.full.json, 400000)
+const here = dirname(fileURLToPath(import.meta.url));
+const traitsPath = process.argv[2] ? resolve(process.argv[2]) : resolve(here, '../../traits.full.json');
+const pairs = Number.parseInt(process.argv[3] ?? '400000', 10);
+if (!Number.isSafeInteger(pairs) || pairs < 1) throw new Error('pairs must be a positive integer');
 const dataset = await loadTraits(traitsPath);
-const entries = Object.entries(dataset);
-if (entries.length < 2) throw new Error('At least two tokens are required for random-pair balance');
-const fighters: Fighter[] = entries.map(([id, token]) => fighterFromToken(id, token));
-const attrsById = new Map(entries.map(([id, token]) => [id, token.attributes.map((a: TraitAttribute) => `${a.trait_type}=${a.value}`).join('; ')]));
-const core: Move[] = ['Headbutt', 'Quick Feet', 'Iron Hide'];
-const temperaments = ['Feisty', 'Cool', 'Wild'] as const;
-const risks = ['Safe', 'Even', 'Gamble'] as const;
-const wins = new Map(fighters.map(f => [f.tokenId, 0]));
-const appearances = new Map(fighters.map(f => [f.tokenId, 0]));
-let kos = 0;
-for (let i = 0; i < requestedPairs; i++) {
-  const rng = createRng(`balance-full:${i}`);
-  const leftIndex = rng.int(fighters.length);
-  let rightIndex = rng.int(fighters.length - 1);
-  if (rightIndex >= leftIndex) rightIndex++;
-  const left = fighters[leftIndex], right = fighters[rightIndex];
-  const planFor = (fighter: Fighter): Plan => {
-    const moves: Move[] = [...core, ...(fighter.signature ? [fighter.signature] : [])];
-    return { temperament: temperaments[rng.int(temperaments.length)], move: moves[rng.int(moves.length)], risk: risks[rng.int(risks.length)] };
-  };
-  const result = simulate(left, right, planFor(left), planFor(right), `balance-full-fight:${i}`);
-  appearances.set(left.tokenId, appearances.get(left.tokenId)! + 1);
-  appearances.set(right.tokenId, appearances.get(right.tokenId)! + 1);
-  const winner = result.summary.winner === 'a' ? left : right;
-  wins.set(winner.tokenId, wins.get(winner.tokenId)! + 1);
-  if (result.summary.ko) kos++;
+const attrsById = new Map(Object.entries(dataset).map(([id, t]) => [id, t.attributes.map((a: TraitAttribute) => `${a.trait_type}=${a.value}`).join('; ')]));
+const started = Date.now();
+const r = runBalance(buildEntries(dataset), pairs);
+const f = (n: number) => n.toFixed(1);
+const checks: [string, boolean, string][] = [];
+const check = (label: string, ok: boolean, detail: string) => checks.push([label, ok, detail]);
+const fightsPerToken = pairs * 2 / r.tokens;
+console.log(`Full-collection balance: ${pairs.toLocaleString()} pairs, ${r.tokens} tokens sampled, about ${fightsPerToken.toFixed(0)} fights per token (${((Date.now() - started) / 1000).toFixed(1)}s)`);
+console.log(`Token win rates: lowest ${f(r.minRate)}%, highest ${f(r.maxRate)}%, std dev ${f(r.stdDev)} (noise-corrected ${f(r.noiseCorrectedStdDev)}, expected sampling noise ${f(r.expectedNoiseStdDev)})`);
+console.log(`Tokens outside 35 to 65%: ${r.outside35to65} (${(r.outside35to65 / r.tokens * 100).toFixed(1)}%); outside 30 to 70%: ${r.outside30to70}`);
+console.log(`KO rate: ${f(r.koRate)}%; lower-total fighter wins: ${f(r.lowerTotalWinRate)}%`);
+console.log(`Tier win rates (Common to Legendary): ${r.tierRates.map(t => `${t.cls} ${f(t.rate)}%`).join(', ')}`);
+check('no token outside 30 to 70%', r.outside30to70 === 0, `${r.outside30to70}`);
+check('at most 3% of tokens outside 35 to 65%', r.outside35to65 / r.tokens <= 0.03, `${(r.outside35to65 / r.tokens * 100).toFixed(1)}%`);
+check('std dev at most 7.5', r.stdDev <= 7.5, f(r.stdDev));
+check('KO rate 5 to 25%', r.koRate >= 5 && r.koRate <= 25, f(r.koRate));
+check('tier win rates strictly increasing', r.tierRates.every((t, i) => i === 0 || t.rate > r.tierRates[i - 1].rate), r.tierRates.map(t => f(t.rate)).join(' < '));
+const bands: Record<string, [number, number]> = { body: [45, 56], eyes: [45, 56], head: [45, 56], voice: [45, 56], aura: [45, 60], accessory: [45, 60], signature: [45, 60] };
+console.log('\nClass win rates');
+console.log('Group | Class | Win rate | Fights | Band');
+console.log('---|---|---:|---:|---');
+for (const c of r.classRates) {
+  const band = bands[c.group]; const ok = c.cls === 'none' || c.cls === 'Legendary' || (c.rate >= band[0] && c.rate <= band[1]);
+  console.log(`${c.group} | ${c.cls} | ${f(c.rate)}% | ${c.played} | ${band[0]} to ${band[1]}${ok ? '' : ' FAIL'}`);
+  if (c.cls !== 'none' && c.cls !== 'Legendary') check(`${c.group} ${c.cls} within ${band[0]} to ${band[1]}%`, ok, f(c.rate));
 }
-const rows = fighters.map(f => ({
-  id: f.tokenId, name: f.name, wins: wins.get(f.tokenId)!, played: appearances.get(f.tokenId)!,
-  rate: appearances.get(f.tokenId)! ? wins.get(f.tokenId)! / appearances.get(f.tokenId)! * 100 : null,
-  traits: attrsById.get(f.tokenId)!,
-})).filter(row => row.rate !== null).sort((a, b) => a.rate! - b.rate! || Number(a.id) - Number(b.id));
-const rates = rows.map(row => row.rate!);
-console.log(`Full-dataset random-pair balance: ${requestedPairs.toLocaleString()} fights; ${fighters.length} tokens; ${rows.length} tokens sampled`);
-console.log(`KO rate: ${(kos / requestedPairs * 100).toFixed(2)}% (${kos}/${requestedPairs})`);
-console.log(`Per-token win-rate range among sampled tokens: ${Math.min(...rates).toFixed(2)}%–${Math.max(...rates).toFixed(2)}%`);
-console.log(`Tokens not sampled: ${fighters.length - rows.length}`);
-for (const [label, list] of [['10 lowest win rates', rows.slice(0, 10)], ['10 highest win rates', [...rows].reverse().slice(0, 10)]] as const) {
+const rows = [...r.tokenRates].sort((a, b) => a.rate - b.rate || Number(a.id) - Number(b.id));
+for (const [label, list] of [['10 lowest token win rates', rows.slice(0, 10)], ['10 highest token win rates', [...rows].reverse().slice(0, 10)]] as const) {
   console.log(`\n${label}`);
-  console.log('Token | Name | Win rate | Wins / appearances | Traits');
+  console.log('Token | Name | Win rate | Wins / fights | Traits');
   console.log('---|---|---:|---:|---');
-  for (const row of list) console.log(`${row.id} | ${row.name} | ${row.rate!.toFixed(2)}% | ${row.wins}/${row.played} | ${row.traits}`);
+  for (const t of list) console.log(`${t.id} | ${t.name} | ${f(t.rate)}% | ${t.wins}/${t.played} | ${attrsById.get(t.id)}`);
 }
+const outsiders = r.tokenRates.filter(t => t.rate < 30 || t.rate > 70);
+if (outsiders.length) {
+  const se = Math.sqrt(0.25 / (pairs * 2 / r.tokens)) * 100;
+  console.log(`\nTokens outside 30 to 70% (sampling standard error is about ${se.toFixed(1)} points per token at this size; rerun with 2,000,000 pairs to confirm):`);
+  for (const t of outsiders) console.log(`${t.id} | ${t.name} | ${f(t.rate)}% | ${t.wins}/${t.played}`);
+}
+console.log('\nTargets (SIM_SPEC section 10.8)');
+for (const [label, ok, detail] of checks) console.log(`${ok ? 'PASS' : 'FAIL'}  ${label}  (${detail})`);
+const failed = checks.filter(c => !c[1]).length;
+console.log(`\n${failed === 0 ? 'ALL TARGETS PASS' : `${failed} TARGET(S) FAILED`} at ${pairs.toLocaleString()} pairs`);
+process.exit(failed === 0 ? 0 : 1);

@@ -185,6 +185,20 @@ Targets for any conforming engine on the full collection (400,000 pairs): no tok
 
 Required coverage gate: running the coverage script on the full scan must report 0 unmapped values in Body, Eyes, Head, Mouth, Aura, Accessory, and Tier.
 
+Engine v1.3 as delivered (TypeScript engine in `sim/`, `npm run balance:full`), all 1,969 Chogs:
+
+| Check | 400,000 pairs (about 406 fights per token) | 2,000,000 pairs (about 2,031 fights per token) |
+|---|---:|---:|
+| Lowest and highest token win rate | 30.2% / 70.4% | 34.6% / 68.0% |
+| Standard deviation of token win rates | 6.2 | 5.9 |
+| Tokens outside 35 to 65% | 25 (1.3%) | 17 (0.9%) |
+| Tokens outside 30 to 70% | 1 | 0 |
+| KO rate | 19.0% | 19.1% |
+| Lower-total fighter wins | 45.1% | 45.0% |
+| Tier win rates, Common to Legendary | 48.1%, 52.3%, 58.9%, 61.4%, 63.5% | 48.1%, 52.4%, 59.6%, 60.8%, 64.1% |
+
+The one token outside 30 to 70% at 400,000 pairs (CHOG #978 at 70.4%; the lowest token, CHOG #1769, was 30.2%) moved back inside at 2,000,000 pairs, so it was sampling noise (standard error about 2.5 points per token at 400,000 pairs, about 1.1 at 2,000,000). The first table in this section reports 0 tokens outside 30 to 70% at 400,000 pairs; a different harness or random seed can land one token just outside. Use 2,000,000 pairs to settle a borderline token. Coverage gate: 0 unmapped values on the full scan.
+
 ## 11. Open items
 
 - Multipliers and thresholds are tuned values, not final: rerun section 10.8 after any change.

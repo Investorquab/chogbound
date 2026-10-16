@@ -5,3 +5,4 @@ export * from './fight.js';
 export * from './narration.js';
 export * from './traits.js';
 export * from './balance.config.js';
+export * from './harness.js';
