@@ -75,7 +75,7 @@ export function simulate(fighterA: Fighter, fighterB: Fighter, planA: Plan, plan
     let damageFactor = 1; if (attacker.plan.temperament === 'Feisty') damageFactor *= round <= 3 ? 1.1 : round >= 6 ? 0.9 : 1;
     if (defender.plan.temperament === 'Cool' && round <= 3) damageFactor *= 0.9;
     if (scanCounter) damageFactor *= EFFECTS.scanCounterMultiplier;
-    if (attacker.fighter.aura === 'gust' && round === 1) { damageFactor *= EFFECTS.gustRound1Damage; procs.push('gust-surge'); }
+    if (attacker.fighter.aura === 'gust' && round === 1) { damageFactor *= EFFECTS.gustRound1Damage; procs.push('gust'); }
     const raw = attackStat * DAMAGE_COEFFICIENT * multiplier * (1 + variance) * (1 - guard) * (crit ? CRIT_MULTIPLIER : 1) * damageFactor;
     const damage = roundDamage(raw); if (crit) procs.push('crit');
     const dealt = Math.min(defender.hp, damage); defender.hp -= dealt;

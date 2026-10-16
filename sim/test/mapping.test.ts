@@ -103,7 +103,7 @@ describe('v1.3 effect behaviour', () => {
     let marked = 0;
     for (let seed = 0; seed < 300; seed++) {
       const r = simulate(gust, plain, plan(), plan(), `gust:${seed}`);
-      for (const e of r.events.filter(x => x.actor === 'a' && x.action === 'attack')) { if (e.procs.includes('gust-surge')) { marked++; expect(e.round).toBe(1); } }
+      for (const e of r.events.filter(x => x.actor === 'a' && x.action === 'attack')) { if (e.procs.includes('gust')) { marked++; expect(e.round).toBe(1); } }
     }
     expect(marked).toBeGreaterThan(0);
   });
