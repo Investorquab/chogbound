@@ -64,3 +64,6 @@ small{font-size:12px}
 .summary-ending{padding:12px;border-radius:10px;background:#21193b;margin-bottom:14px}
 .summary-ending p{margin:7px 0 0;font-size:14px;line-height:1.55;color:#ede8ff}
 @media(max-width:650px){.arena-podium{gap:6px}.arena-podium-card{padding:8px}.arena-podium-card .arena-podium-art{height:160px;min-height:160px}.arena-podium-card>strong{font-size:16px}.summary-verdict>strong{font-size:34px}}
+
+/* Keep the arena board within the mobile viewport. */
+@media(max-width:650px){.arena-board{max-width:100%;overflow-x:clip}.arena-podium{width:100%;min-width:0}}

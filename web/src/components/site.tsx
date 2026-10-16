@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
@@ -23,8 +23,12 @@ export function SiteFooter() {
   </footer>;
 }
 
-export function ArtImage({ tokenId, name, className = 'chog-art' }: { tokenId: string; name: string; className?: string }) {
-  return <img className={className} src={`/api/art/${encodeURIComponent(tokenId)}`} alt={name} />;
+const PLACEHOLDER_ART = `data:image/svg+xml,${encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect width="200" height="200" rx="18" fill="#30234f"/><path d="M43 82 56 42 86 57Q100 51 114 57L144 42 157 82 151 132Q143 160 100 165Q57 160 49 132Z" fill="#8b78c7" stroke="#c9baff" stroke-width="4"/><ellipse cx="77" cy="100" rx="10" ry="13" fill="#ffc24b"/><ellipse cx="123" cy="100" rx="10" ry="13" fill="#ffc24b"/><path d="M78 132Q100 146 122 132" fill="none" stroke="#211507" stroke-width="6" stroke-linecap="round"/></svg>'
+)}`;
+
+export function ArtImage({ tokenId: _tokenId, name, className = 'chog-art' }: { tokenId: string; name: string; className?: string }) {
+  return <img className={className} src={PLACEHOLDER_ART} alt={`${name} (art placeholder)`} />;
 }
 
 export function StatGrid({ entry }: { entry: import('../lib/cast.js').CastEntry }) {
@@ -34,4 +38,5 @@ export function StatGrid({ entry }: { entry: import('../lib/cast.js').CastEntry 
     <div className="bar"><span style={{ width: `${stats[stat]}%` }} /></div>
   </div>)}</div>;
 }
+
 
