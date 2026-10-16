@@ -3,7 +3,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { ArtImage } from '../../components/site.js';
 import { byTokenId, safeStorageGet } from '../../lib/cast.js';
 import { getStoredFight, runFight, type StoredFight } from '../../lib/fight-store.js';
-import { renderNarration } from 'chogbound-sim/src/narration.js';
+import { renderFightEnding, renderNarration } from 'chogbound-sim/src/narration.js';
+import { humanizeProcIds, procLabel } from '../../lib/proc-labels.js';
 import type { FightEvent, Side } from 'chogbound-sim/src/types.js';
 
 function isKnockout(event: FightEvent) {
@@ -12,8 +13,8 @@ function isKnockout(event: FightEvent) {
 }
 function effectLabel(event: FightEvent | null, signatureMove?: string | null) {
   if (!event) return 'FIGHT LOG READY';
-  if (isKnockout(event)) return 'KNOCKOUT';
-  if (event.procs.length) return event.procs.join(' / ').toUpperCase();
+  if (isKnockout(event)) return event.procs.length ? `KNOCKOUT · ${event.procs.map(procLabel).join(' / ')}` : 'KNOCKOUT';
+  if (event.procs.length) return event.procs.map(procLabel).join(' / ');
   if (signatureMove && event.move === signatureMove) return `${String(event.move).toUpperCase()} SIGNATURE`;
   if (event.action === 'burn' || event.action === 'heal' || /^(aura|accessory|signature)\./.test(event.narration_key)) return String(event.move).toUpperCase();
   return '';
@@ -37,7 +38,7 @@ export default function ReplayPage() {
   const activeNarration = useMemo(() => {
     if (!fight || !shownEvent) return 'The first event is ready. Play to step through the event log.';
     const actor = shownEvent.actor === 'a' ? you : rival;
-    return actor ? renderNarration(shownEvent, actor.fighter.voiceClass) : '';
+    return actor ? humanizeProcIds(renderNarration(shownEvent, actor.fighter.voiceClass, fight.result.summary.seed)) : '';
   }, [fight, shownEvent, you, rival]);
 
   useEffect(() => {
@@ -58,6 +59,9 @@ export default function ReplayPage() {
   const currentTarget: Side | null = shownEvent ? (shownEvent.actor === 'a' ? 'b' : 'a') : null;
   const bannerActor = shownEvent ? (shownEvent.actor === 'a' ? you : rival) : null;
   const banner = finished ? 'FIGHT COMPLETE' : effectLabel(shownEvent, bannerActor?.fighter.signature);
+  const endingNarration = humanizeProcIds(renderFightEnding(summary, winner.fighter.voiceClass, summary.winner, events.length + 1, summary.seed));
+  const verdict = summary.winner === 'a' ? 'You won' : 'You lost';
+  const margin = summary.ko ? 'by KO' : `on HP (${summary.final_hp.a} to ${summary.final_hp.b})`;
   return <main className="replay-main">
     <div className="replay-top"><div><div className="eyebrow">NIGHT {String(fight.night).padStart(2, '0')} / GUEST REPLAY</div><h1 className="display">THE LAST STAND</h1></div><span className="pill">REAL SIMULATOR LOG</span></div>
     <section aria-label="Fight replay stage" className={`replay-stage surface ${finished ? 'finished' : ''}`}>
@@ -67,7 +71,7 @@ export default function ReplayPage() {
           <div className="fighter-art art-a"><ArtImage tokenId={you.tokenId} name={you.metadata.name} className="chog-art" /></div>
           <div className="hp-meta"><span className="hp-label">{you.metadata.name}</span><strong>{hp.a}</strong><span className="hp-unit">HP</span></div>
           <div className="hp-track"><span style={{ width: `${hp.a}%` }} /></div>
-          <div className="fighter-tags"><span className="tag">{you.fighter.voiceClass}</span><span className="tag">{you.fighter.signature ?? 'Core moves'}</span><span className="tag">{you.fighter.aura}</span></div>
+          <div className="fighter-tags"><span className="tag">{you.fighter.voiceClass}</span><span className="tag">{you.fighter.signature ?? 'Core moves'}</span>{you.fighter.aura !== 'none' && <span className="tag gold">{procLabel(you.fighter.aura)}</span>}{you.fighter.accessory !== 'none' && <span className="tag gold">{procLabel(you.fighter.accessory)}</span>}</div>
         </article>
         <div className="vs-badge">VS</div>
         <article className={`fighter fighter-b ${currentTarget === 'b' && shownEvent && shownEvent.damage > 0 ? 'hit-flash' : ''} ${hp.b === 0 ? 'ko-flash' : ''}`}>
@@ -75,11 +79,11 @@ export default function ReplayPage() {
           <div className="fighter-art art-b"><ArtImage tokenId={rival.tokenId} name={rival.metadata.name} className="chog-art" /></div>
           <div className="hp-meta"><span className="hp-label">{rival.metadata.name}</span><strong>{hp.b}</strong><span className="hp-unit">HP</span></div>
           <div className="hp-track b"><span style={{ width: `${hp.b}%` }} /></div>
-          <div className="fighter-tags"><span className="tag">{rival.fighter.voiceClass}</span><span className="tag">{rival.fighter.signature ?? 'Core moves'}</span><span className="tag">{rival.fighter.aura}</span></div>
+          <div className="fighter-tags"><span className="tag">{rival.fighter.voiceClass}</span><span className="tag">{rival.fighter.signature ?? 'Core moves'}</span>{rival.fighter.aura !== 'none' && <span className="tag gold">{procLabel(rival.fighter.aura)}</span>}{rival.fighter.accessory !== 'none' && <span className="tag gold">{procLabel(rival.fighter.accessory)}</span>}</div>
         </article>
       </div>
       <div className={`effect-banner ${banner ? 'visible' : ''} ${finished || (shownEvent && isKnockout(shownEvent)) ? 'ko-banner' : ''}`} aria-live="polite">{banner}</div>
-      <div className="narration" aria-live="polite"><span className="eyebrow">{shownEvent ? `${(shownEvent.actor === 'a' ? you : rival).fighter.voiceClass.toUpperCase()} VOICE` : 'SIMULATOR NARRATION'}</span><p>{activeNarration}</p></div>
+      <div className="narration" aria-live="polite"><span className="eyebrow">{shownEvent ? `${(shownEvent.actor === 'a' ? you : rival).metadata.name} says` : 'SIMULATOR NARRATION'}</span><p>{activeNarration}</p></div>
       <div className="play-controls"><button className="btn primary" type="button" onClick={() => { if (finished) setCursor(0); setPlaying(true); }}>PLAY</button><button className="btn secondary" type="button" onClick={() => setPlaying(false)}>PAUSE</button><button className="btn secondary" type="button" onClick={next}>NEXT EVENT</button><button className="btn secondary" type="button" onClick={skip}>SKIP TO RESULT</button><button className="btn secondary" type="button" onClick={restart}>RESTART</button><span className="event-counter">{cursor} / {events.length}</span></div>
     </section>
     <section className="replay-lower"><div className="surface event-panel"><div className="eyebrow">EVENT LOG</div><div className="event-list">{events.slice(0, cursor).map((event) => {
@@ -87,9 +91,9 @@ export default function ReplayPage() {
       const ko = isKnockout(event);
       const outcome = ko ? 'KO' : event.outcome.toUpperCase();
       const amount = event.damage > 0 ? `-${event.damage} HP` : event.heal > 0 ? `+${event.heal} HP` : '0 DAMAGE';
-      return <div className={`event-item ${event.n === cursor ? 'active' : ''}`} key={`${event.n}-${event.round}`}><span className="event-number">{String(event.n).padStart(2, '0')}</span><span className="event-round">R{event.round}</span><span className={`event-outcome ${outcome.toLowerCase()}`}>{outcome}</span><div className="event-copy"><div className="event-headline"><strong>{actor.metadata.name}</strong><span>{event.move}</span></div><div className="event-detail"><span>{amount}</span>{event.procs.map((proc) => <span className="tag gold" key={proc}>{proc}</span>)}</div><p>{renderNarration(event, actor.fighter.voiceClass)}</p></div></div>;
+      return <div className={`event-item ${event.n === cursor ? 'active' : ''}`} key={`${event.n}-${event.round}`}><span className="event-number">{String(event.n).padStart(2, '0')}</span><span className="event-round">R{event.round}</span><span className={`event-outcome ${outcome.toLowerCase()}`}>{outcome}</span><div className="event-copy"><div className="event-headline"><strong>{actor.metadata.name}</strong><span>{event.move}</span></div><div className="event-detail"><span>{amount}</span>{event.procs.map((proc) => <span className="tag gold" key={proc}>{procLabel(proc)}</span>)}</div><p>{humanizeProcIds(renderNarration(event, actor.fighter.voiceClass, summary.seed))}</p></div></div>;
     })}</div></div>
-      <aside className="surface summary-panel" data-testid="final-summary" data-finished={String(finished)}><div className="eyebrow">FIGHT SUMMARY</div><div className="summary-score"><div><span>STAT TOTAL</span><strong>{you.fighter.stats.GRIT + you.fighter.stats.PUNCH + you.fighter.stats.SWIFT + you.fighter.stats.NERVE}</strong><small>You</small></div><div className="summary-vs">VS</div><div><span>STAT TOTAL</span><strong>{rival.fighter.stats.GRIT + rival.fighter.stats.PUNCH + rival.fighter.stats.SWIFT + rival.fighter.stats.NERVE}</strong><small>Rival</small></div></div><div className="summary-lines"><div><span>Winner</span><strong>{winner.metadata.name}</strong></div><div><span>Final HP</span><strong>{summary.final_hp.a} / {summary.final_hp.b}</strong></div><div><span>Upset</span><strong>{summary.upset ? 'Yes' : 'No'}</strong></div><div><span>Result source</span><strong>Live simulator output</strong></div><div><span>Rounds</span><strong>{summary.rounds}</strong></div><div><span>Progress</span><strong>{finished ? 'Final result' : `${cursor} of ${events.length} events`}</strong></div></div></aside>
+      <aside className="surface summary-panel" data-testid="final-summary" data-finished={String(finished)} data-upset={String(summary.upset)}><div className="eyebrow">FIGHT SUMMARY</div><div className="summary-verdict"><strong data-testid="summary-verdict">{verdict}</strong><span data-testid="summary-margin">{margin}</span>{summary.upset && <span className="upset-badge" data-testid="upset-badge">Upset</span>}</div><div className="summary-ending"><span className="eyebrow">{winner.metadata.name} says</span><p data-testid="summary-ending-narration">{endingNarration}</p></div><div className="summary-score"><div><span>STAT TOTAL</span><strong>{you.fighter.stats.GRIT + you.fighter.stats.PUNCH + you.fighter.stats.SWIFT + you.fighter.stats.NERVE}</strong><small>You</small></div><div className="summary-vs">VS</div><div><span>STAT TOTAL</span><strong>{rival.fighter.stats.GRIT + rival.fighter.stats.PUNCH + rival.fighter.stats.SWIFT + rival.fighter.stats.NERVE}</strong><small>Rival</small></div></div><div className="summary-lines"><div><span>Winner</span><strong>{winner.metadata.name}</strong></div><div><span>Final HP</span><strong>{summary.final_hp.a} / {summary.final_hp.b}</strong></div><div><span>Upset</span><strong>{summary.upset ? 'Yes' : 'No'}</strong></div><div><span>Result source</span><strong>Live simulator output</strong></div><div><span>Rounds</span><strong>{summary.rounds}</strong></div><div><span>Progress</span><strong>{finished ? 'Final result' : `${cursor} of ${events.length} events`}</strong></div></div></aside>
     </section>
   </main>;
 }

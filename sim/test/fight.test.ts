@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { simulate } from '../src/fight.js';
-import { classifyNarration, renderNarration, renderNarrationKind } from '../src/narration.js';
+import { classifyNarration, ENGINE_PROC_IDS, renderNarration, renderNarrationKind } from '../src/narration.js';
 import { computeStats } from '../src/stats.js';
 import { createRng } from '../src/rng.js';
 import type { Fighter, Plan, TraitAttribute } from '../src/types.js';
@@ -166,6 +166,38 @@ describe('fight engine',()=>{
   for(const voice of ['fierce','smug','hustler','hungry','gloom','neutral'] as const){
    const lines=result.events.map(e=>renderNarration(e,voice,result.summary.seed));
    for(let i=1;i<lines.length;i++) expect(lines[i],`${voice} event ${i+1}`).not.toBe(lines[i-1]);
+  }
+ });
+ it('never prints a lowercase hyphenated proc slug',()=>{
+  const result=simulate(fighter('fire',{Eyes:'fire laser',Aura:'Fire',Accessory:'Green Candle'}),fighter('glow',{Aura:'Light Purple',Accessory:'Fwog'}),plan({move:'Laser Stare',risk:'Gamble'}),plan({risk:'Gamble'}),'slug-audit');
+  for(const event of result.events) for(const voice of ['fierce','smug','hustler','hungry','gloom','neutral'] as const){
+   const line=renderNarration(event,voice,result.summary.seed);
+   expect(line).not.toMatch(/\b[a-z]+(?:-[a-z]+)+\b/);
+  }
+ });
+ it('has a human sentence for every proc emitted by the engine',()=>{
+  const event={n:3,round:2,actor:'a' as const,action:'attack' as const,move:'Headbutt' as const,outcome:'hit' as const,damage:7,heal:0,hp_after:{a:88,b:93},procs:[] as string[],narration_key:'hit.headbutt',vars:{damage:7,target_hp:93,heal:0,hp:88}};
+  const voices=['fierce','smug','hustler','hungry','gloom','neutral'] as const;
+  for(const id of ENGINE_PROC_IDS){
+   const withProc={...event,procs:[id]};
+   for(const voice of voices){
+    const line=renderNarration(withProc,voice,'proc-coverage');
+    expect(line.length,`${id} ${voice}`).toBeGreaterThan(20);
+    expect(line).not.toBe(renderNarration(event,voice,'proc-coverage'));
+    expect(line).not.toMatch(/\b[a-z]+(?:-[a-z]+)+\b/);
+    const allowed=Object.values(withProc.vars).filter(v=>typeof v==='number') as number[];
+    const found=[...line.matchAll(/\b\d+(?:\.\d+)?\b/g)].map(m=>Number(m[0]));
+    for(const n of found) expect(allowed,`${id} ${voice} number ${n}`).toContain(n);
+   }
+  }
+ });
+ it('has human narration for named effects and both Chaos Gaze outcomes',()=>{
+  const baseEvent={n:8,round:2,actor:'a' as const,action:'attack' as const,move:'Chaos Gaze' as const,outcome:'hit' as const,damage:9,heal:0,hp_after:{a:80,b:91},procs:[] as string[],narration_key:'hit.chaos-gaze',vars:{damage:9,target_hp:91}};
+  for(const id of ['gust','charm','scan','chaos-gaze'] as const){
+   const event={...baseEvent,procs:[id],outcome:id==='chaos-gaze'?'miss' as const:'hit' as const,vars:id==='scan'?{rival_plan:'Wild/Headbutt/Even'}:id==='chaos-gaze'?{}:baseEvent.vars};
+   const line=renderNarration(event,'neutral','alias-coverage');
+   expect(line).not.toMatch(/\b[a-z]+(?:-[a-z]+)+\b/);
+   expect(line.length).toBeGreaterThan(25);
   }
  });
  it('narration category is derived from event outcomes and knockout HP',()=>{

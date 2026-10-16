@@ -69,3 +69,26 @@ test.describe('ChogBound guest demo quality gates', () => {
     }
   });
 });
+
+test('Replay renders human proc labels and never exposes lowercase hyphenated IDs', async ({ page }) => {
+  await page.goto('/replay');
+  await page.getByRole('button', { name: 'SKIP TO RESULT' }).click();
+  const visibleText = await page.locator('body').innerText();
+  expect(visibleText).not.toMatch(/\b[a-z]+(?:-[a-z]+)+\b/);
+  await expect(page.locator('[data-testid="final-summary"]')).toBeVisible();
+});
+
+test('Fight Summary shows verdict, KO/HP margin, ending narration, and conditional Upset badge', async ({ page }) => {
+  await page.goto('/replay');
+  await page.getByRole('button', { name: 'SKIP TO RESULT' }).click();
+  const summary = page.locator('[data-testid="final-summary"]');
+  await expect(summary.getByTestId('summary-verdict')).toContainText(/You (won|lost)/);
+  await expect(summary.getByTestId('summary-margin')).toContainText(/^(by KO|on HP \(\d+ to \d+\))$/);
+  await expect(summary.getByTestId('summary-ending-narration')).not.toBeEmpty();
+  if (await summary.getAttribute('data-upset') === 'true') {
+    await expect(summary.getByTestId('upset-badge')).toHaveText('Upset');
+  } else {
+    await expect(summary.getByTestId('upset-badge')).toHaveCount(0);
+  }
+});
+

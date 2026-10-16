@@ -35,12 +35,16 @@ const oneOf = <T extends string>(key: string, fallback: T, choices: readonly T[]
   return value as T;
 };
 const moves = ['Headbutt','Quick Feet','Iron Hide','Laser Stare','Scan','Charm','Stare Down','Chaos Gaze'] as const;
-const makePlan = (side: 'a' | 'b'): Plan => ({
+const rawMove = (side: 'a' | 'b'): string => {
+  const value = values.get(`--${side}-move`) ?? 'Headbutt';
+  if (value !== 'signature' && !moves.includes(value as typeof moves[number])) throw new Error(`Invalid --${side}-move: ${value}. Allowed: ${[...moves, 'signature'].join(', ')}`);
+  return value;
+};
+const planParts = (side: 'a' | 'b') => ({
   temperament: oneOf<Temperament>(`--${side}-temperament`, 'Feisty', ['Feisty','Cool','Wild']),
-  move: oneOf<Move>(`--${side}-move`, 'Headbutt', moves),
+  requestedMove: rawMove(side),
   risk: oneOf<Risk>(`--${side}-risk`, 'Even', ['Safe','Even','Gamble']),
 });
-const planA = makePlan('a'), planB = makePlan('b');
 const seed = values.get('--seed') ?? '1';
 const dataset = await loadTraits();
 const tokenA = dataset[tokenAId], tokenB = dataset[tokenBId];
@@ -48,6 +52,12 @@ if (!tokenA) throw new Error(`Token ID ${tokenAId} not found in root traits.json
 if (!tokenB) throw new Error(`Token ID ${tokenBId} not found in root traits.json`);
 const fighterA: Fighter = fighterFromToken(tokenAId, tokenA);
 const fighterB: Fighter = fighterFromToken(tokenBId, tokenB);
+const resolvePlan = (parts: ReturnType<typeof planParts>, fighter: Fighter, side: 'a' | 'b'): Plan => {
+  if (parts.requestedMove === 'signature' && !fighter.signature) throw new Error(`Fighter ${side} has no signature move to select`);
+  return { temperament: parts.temperament, move: parts.requestedMove === 'signature' ? fighter.signature! : parts.requestedMove as Move, risk: parts.risk };
+};
+const planA = resolvePlan(planParts('a'), fighterA, 'a');
+const planB = resolvePlan(planParts('b'), fighterB, 'b');
 const result = simulate(fighterA, fighterB, planA, planB, seed);
 const fighters = { a: fighterA, b: fighterB };
 const eventLog = result.events.map(event => ({
