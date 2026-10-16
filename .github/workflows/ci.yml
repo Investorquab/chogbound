@@ -20,6 +20,8 @@ jobs:
           cache: npm
       - name: Install workspace dependencies
         run: npm install
+      - name: Typecheck simulation engine
+        run: npm run typecheck --workspace=chogbound-sim
       - name: Run simulation engine tests
         run: npm run test:engine
       - name: Check trait mapping covers every Chog
