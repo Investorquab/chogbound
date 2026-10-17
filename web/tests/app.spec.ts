@@ -2,6 +2,13 @@ import { test, expect } from '@playwright/test';
 
 const routes = ['/', '/pick', '/coach', '/replay', '/arena', '/profile'];
 
+// Chog art loads from public IPFS gateways at runtime. Tests never touch the network: every gateway request is answered
+// with a tiny valid image, so the art loader path is exercised and console errors stay meaningful.
+const TINY_WEBP = Buffer.from('UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA', 'base64');
+test.beforeEach(async ({ page }) => {
+  await page.route(/\/ipfs\//, (route) => route.fulfill({ status: 200, contentType: 'image/webp', body: TINY_WEBP }));
+});
+
 test.describe('ChogBound guest demo quality gates', () => {
   test('every page loads without console errors', async ({ page }) => {
     const errors: string[] = [];

@@ -16,3 +16,20 @@ export function artUrls(name: string): string[] {
   const n = chogNumberFromName(name);
   return n === null ? [] : IPFS_GATEWAYS.map((g) => `${g}${IMAGE_CID}/${n}.webp`);
 }
+
+/** First URL that loads, trying them in order. `tryLoad` is injected so this can be tested without a browser. */
+export async function resolveFirstLoadable(urls: string[], tryLoad: (url: string) => Promise<boolean>): Promise<string | null> {
+  for (const url of urls) { if (await tryLoad(url)) return url; }
+  return null;
+}
+/** Browser image probe with a timeout, so a slow gateway moves on to the next one instead of leaving a blank frame. */
+export function loadImage(url: string, timeoutMs = 6000): Promise<boolean> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const timer = setTimeout(() => { img.onload = null; img.onerror = null; img.src = ''; resolve(false); }, timeoutMs);
+    img.onload = () => { clearTimeout(timer); resolve(true); };
+    img.onerror = () => { clearTimeout(timer); resolve(false); };
+    img.referrerPolicy = 'no-referrer';
+    img.src = url;
+  });
+}
