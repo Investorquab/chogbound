@@ -76,3 +76,63 @@ test('the result stays hidden until the fight ends, then appears', async ({ page
   await expect(summary.getByText('Winner')).toBeVisible();
   await expect(summary.getByTestId('summary-pending')).toHaveCount(0);
 });
+
+test.describe('game sounds', () => {
+  test.beforeEach(async ({ page }) => {
+    // Count the real audio nodes the page creates, so we can prove sound is requested without needing speakers.
+    await page.addInitScript(() => {
+      const w = window as unknown as { __audio: { nodes: number }; AudioContext: typeof AudioContext };
+      w.__audio = { nodes: 0 };
+      const Original = w.AudioContext;
+      w.AudioContext = class extends Original {
+        createOscillator() { w.__audio.nodes++; return super.createOscillator(); }
+        createBufferSource() { w.__audio.nodes++; return super.createBufferSource(); }
+      } as typeof AudioContext;
+    });
+  });
+  const nodes = (page: import('@playwright/test').Page) => page.evaluate(() => (window as unknown as { __audio: { nodes: number } }).__audio.nodes);
+
+  test('each event makes sound, and the Sound toggle mutes and unmutes it', async ({ page }) => {
+    await page.goto('/replay');
+    await page.getByRole('button', { name: 'NEXT EVENT' }).click();
+    await expect.poll(() => nodes(page)).toBeGreaterThan(0);
+    await page.getByRole('button', { name: 'Sound on' }).click();
+    await expect(page.getByRole('button', { name: 'Sound off' })).toBeVisible();
+    const muted = await nodes(page);
+    await page.getByRole('button', { name: 'NEXT EVENT' }).click();
+    await page.getByRole('button', { name: 'NEXT EVENT' }).click();
+    await page.waitForTimeout(400);
+    expect(await nodes(page)).toBe(muted);
+    await page.getByRole('button', { name: 'Sound off' }).click();
+    await page.getByRole('button', { name: 'NEXT EVENT' }).click();
+    await expect.poll(() => nodes(page)).toBeGreaterThan(muted);
+  });
+
+  test('PLAY begins with the start sound (a stinger made of at least 5 sounds)', async ({ page }) => {
+    await page.goto('/replay');
+    expect(await nodes(page)).toBe(0);
+    await page.getByRole('button', { name: 'PLAY', exact: true }).click();
+    await expect.poll(() => nodes(page)).toBeGreaterThanOrEqual(5);
+  });
+
+  test('skipping to the result plays only the click and the win or lose jingle', async ({ page }) => {
+    await page.goto('/replay');
+    expect(await nodes(page)).toBe(0);
+    await page.getByRole('button', { name: 'SKIP TO RESULT' }).click();
+    await expect(page.getByTestId('stage-result')).toBeVisible();
+    // click (1) + jingle (win 9 or lose 4); no per-event sounds are queued for the events that were skipped.
+    await expect.poll(() => nodes(page)).toBeGreaterThanOrEqual(5);
+    expect(await nodes(page)).toBeLessThanOrEqual(12);
+  });
+
+  test('a muted choice is remembered after a reload', async ({ page }) => {
+    await page.goto('/replay');
+    await page.getByRole('button', { name: 'Sound on' }).click();
+    await page.reload();
+    await expect(page.getByRole('button', { name: 'Sound off' })).toBeVisible();
+    const before = await nodes(page);
+    await page.getByRole('button', { name: 'NEXT EVENT' }).click();
+    await page.waitForTimeout(400);
+    expect(await nodes(page)).toBe(before);
+  });
+});

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArtImage } from '../../components/site.js';
 import { byTokenId, safeStorageGet, safeStorageSet } from '../../lib/cast.js';
 import { getStoredFight, startTonight, type StoredFight } from '../../lib/fight-store.js';
@@ -9,6 +9,7 @@ import { captionFor } from '../../lib/caption.js';
 import { displayName } from 'chogbound-sim/src/stats.js';
 import { humanizeProcIds, procLabel } from '../../lib/proc-labels.js';
 import { VOICE_STORAGE_KEY, isSpeechSupported, speak, stopSpeaking } from '../../lib/voice.js';
+import { SFX_STORAGE_KEY, sfx } from '../../lib/sfx.js';
 import type { FightEvent, Side } from 'chogbound-sim/src/types.js';
 import './replay.css';
 
@@ -26,6 +27,12 @@ function burstFor(event: FightEvent): Burst {
   if (event.outcome === 'dodge') return { kind: 'dodge', top: 'DODGE', bottom: '' };
   return { kind: 'miss', top: 'MISS', bottom: '' };
 }
+/** Game sound for one event: a whoosh then the impact timed to the lunge animation, or a single sound for the other outcomes. */
+function playEventSfx(event: FightEvent) {
+  const kind = burstFor(event).kind;
+  if (kind === 'hit' || kind === 'crit' || kind === 'ko') { sfx.play('whoosh'); sfx.play(kind, 0.17); }
+  else sfx.play(kind);
+}
 const tickerOutcome = (event: FightEvent) => { const b = burstFor(event); return b.bottom ? `${b.top} ${b.bottom}` : b.top; };
 
 export default function ReplayPage() {
@@ -34,13 +41,17 @@ export default function ReplayPage() {
   const [playing, setPlaying] = useState(false);
   const [voiceOn, setVoiceOn] = useState(true);
   const [voicesReady, setVoicesReady] = useState(false);
+  const [sfxOn, setSfxOn] = useState(true);
+  const previousCursor = useRef(0);
   useEffect(() => {
     void (async () => {
       const stored = getStoredFight() ?? await startTonight(safeStorageGet('chogbound.selected-token') ?? '640');
       setFight(stored);
-      if (new URLSearchParams(window.location.search).get('autoplay') === '1') setPlaying(true);
+      if (new URLSearchParams(window.location.search).get('autoplay') === '1') { setPlaying(true); sfx.play('start'); }
     })();
     setVoiceOn(safeStorageGet(VOICE_STORAGE_KEY) !== 'off');
+    const sound = safeStorageGet(SFX_STORAGE_KEY) !== 'off';
+    setSfxOn(sound); sfx.enabled = sound;
     if (isSpeechSupported()) {
       const update = () => setVoicesReady(window.speechSynthesis.getVoices().length > 0);
       update(); window.speechSynthesis.addEventListener('voiceschanged', update);
@@ -70,12 +81,24 @@ export default function ReplayPage() {
   useEffect(() => {
     if (!voiceActive || !fight || !shownEvent) return;
     const actor = shownEvent.actor === 'a' ? you : rival;
-    if (actor) speak(caption, actor.fighter.voiceClass);
+    const kind = burstFor(shownEvent).kind;
+    if (actor) speak(caption, actor.fighter.voiceClass, kind === 'crit' || kind === 'ko');
   }, [cursor]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const before = previousCursor.current; previousCursor.current = cursor;
+    if (cursor === 0 || cursor <= before || !shownEvent) return;
+    if (cursor - before === 1) playEventSfx(shownEvent);
+  }, [cursor]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (!finished || !fight) return;
+    sfx.play(fight.result.summary.winner === 'a' ? 'win' : 'lose', 1.0);
+  }, [finished]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  function restart() { setPlaying(false); setCursor(0); stopSpeaking(); }
-  function next() { setPlaying(false); setCursor((current) => Math.min(events.length, current + 1)); }
-  function skip() { setPlaying(false); setCursor(events.length); stopSpeaking(); }
+  function restart() { sfx.play('click'); setPlaying(false); setCursor(0); stopSpeaking(); }
+  function next() { sfx.play('click'); setPlaying(false); setCursor((current) => Math.min(events.length, current + 1)); }
+  function skip() { sfx.play('click'); setPlaying(false); setCursor(events.length); stopSpeaking(); }
+  function togglePlay() { if (playing) { sfx.play('click'); setPlaying(false); return; } if (finished) setCursor(0); sfx.play(cursor === 0 || finished ? 'start' : 'click'); setPlaying(true); }
+  function toggleSfx() { const nextValue = !sfxOn; setSfxOn(nextValue); sfx.enabled = nextValue; safeStorageSet(SFX_STORAGE_KEY, nextValue ? 'on' : 'off'); if (nextValue) sfx.play('click'); }
   function toggleVoice() { const nextValue = !voiceOn; setVoiceOn(nextValue); safeStorageSet(VOICE_STORAGE_KEY, nextValue ? 'on' : 'off'); if (!nextValue) stopSpeaking(); }
 
   if (!fight || !you || !rival) return <main className="rp"><div className="rp-loading">Preparing tonight&apos;s fight...</div></main>;
@@ -97,9 +120,12 @@ export default function ReplayPage() {
   return <main className="rp">
     <header className="rp-head">
       <div><div className="rp-eyebrow">NIGHT {String(fight.night).padStart(2, '0')} / {isHolderToken(fight.youId) ? 'YOUR CHOG' : 'GUEST REPLAY'}</div><h1 className="rp-title">THE LAST STAND</h1></div>
+<div className="rp-tools"><button type="button" className={`rp-voice ${sfxOn ? 'on' : ''}`} aria-label={sfxOn ? 'Sound on' : 'Sound off'} aria-pressed={sfxOn} onClick={toggleSfx}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" />{sfxOn ? <><path d="M16.5 8.5a5 5 0 0 1 0 7" /><path d="M19 6a8.5 8.5 0 0 1 0 12" /></> : <path d="M17 9l5 6M22 9l-5 6" />}</svg>
+        </button>
       {isSpeechSupported() && <button type="button" className={`rp-voice ${voiceOn ? 'on' : ''}`} aria-label={voiceOn ? 'Voice on' : 'Voice off'} aria-pressed={voiceOn} onClick={toggleVoice}>
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" />{voiceOn ? <><path d="M16.5 8.5a5 5 0 0 1 0 7" /><path d="M19 6a8.5 8.5 0 0 1 0 12" /></> : <path d="M17 9l5 6M22 9l-5 6" />}</svg>
-      </button>}
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4V5z" />{voiceOn ? <><path d="M8 9h8" /><path d="M8 12h5" /></> : <path d="M9 8l6 5M15 8l-6 5" />}</svg>
+      </button>}</div>
     </header>
 
     <div className="rp-grid">
@@ -129,7 +155,7 @@ export default function ReplayPage() {
         </div>
 
         <div className="rp-controls">
-          <button className="rp-btn primary" type="button" onClick={() => { if (playing) setPlaying(false); else { if (finished) setCursor(0); setPlaying(true); } }}>{playing ? 'PAUSE' : 'PLAY'}</button>
+          <button className="rp-btn primary" type="button" onClick={togglePlay}>{playing ? 'PAUSE' : 'PLAY'}</button>
           <button className="rp-btn" type="button" onClick={next}>NEXT EVENT</button>
           <button className="rp-btn" type="button" onClick={skip}>SKIP TO RESULT</button>
           <button className="rp-btn quiet" type="button" onClick={restart}>RESTART</button>

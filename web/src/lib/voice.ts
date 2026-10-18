@@ -14,12 +14,12 @@ export function isSpeechSupported(): boolean {
   return typeof window !== 'undefined' && 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
 }
 /** Speak one line, cancelling whatever is still playing so lines never pile up. */
-export function speak(text: string, voice: VoiceClass): void {
+export function speak(text: string, voice: VoiceClass, excited = false): void {
   if (!isSpeechSupported() || !text) return;
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   const profile = VOICE_PROFILES[voice] ?? VOICE_PROFILES.neutral;
-  utterance.pitch = profile.pitch; utterance.rate = profile.rate; utterance.lang = 'en-US';
+  utterance.pitch = Math.min(2, profile.pitch + (excited ? 0.2 : 0)); utterance.rate = Math.min(2, profile.rate + (excited ? 0.12 : 0)); utterance.lang = 'en-US';
   window.speechSynthesis.speak(utterance);
 }
 export function stopSpeaking(): void { if (isSpeechSupported()) window.speechSynthesis.cancel(); }
