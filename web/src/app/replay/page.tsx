@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ArtImage } from '../../components/site.js';
 import { byTokenId, safeStorageGet, safeStorageSet } from '../../lib/cast.js';
-import { getStoredFight, runFight, type StoredFight } from '../../lib/fight-store.js';
+import { getStoredFight, startTonight, type StoredFight } from '../../lib/fight-store.js';
 import { isHolderToken } from '../../lib/holder.js';
 import { renderFightEnding } from 'chogbound-sim/src/narration.js';
 import { captionFor } from '../../lib/caption.js';
@@ -35,9 +35,11 @@ export default function ReplayPage() {
   const [voiceOn, setVoiceOn] = useState(true);
   const [voicesReady, setVoicesReady] = useState(false);
   useEffect(() => {
-    const stored = getStoredFight() ?? runFight(safeStorageGet('chogbound.selected-token') ?? '640');
-    setFight(stored);
-    if (new URLSearchParams(window.location.search).get('autoplay') === '1') setPlaying(true);
+    void (async () => {
+      const stored = getStoredFight() ?? await startTonight(safeStorageGet('chogbound.selected-token') ?? '640');
+      setFight(stored);
+      if (new URLSearchParams(window.location.search).get('autoplay') === '1') setPlaying(true);
+    })();
     setVoiceOn(safeStorageGet(VOICE_STORAGE_KEY) !== 'off');
     if (isSpeechSupported()) {
       const update = () => setVoicesReady(window.speechSynthesis.getVoices().length > 0);

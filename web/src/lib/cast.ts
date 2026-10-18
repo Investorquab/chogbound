@@ -1,5 +1,6 @@
 import metadata from '../../../traits.json';
 import { computeStats, fighterFromToken } from 'chogbound-sim/src/stats.js';
+import { autopilotPlan } from './night.js';
 import type { Fighter, Plan, TraitToken, StatName } from 'chogbound-sim/src/types.js';
 
 export type TokenMetadata = TraitToken & { image?: string };
@@ -10,7 +11,6 @@ export const cast: CastEntry[] = Object.entries(source).map(([tokenId, token]) =
   metadata: token,
   fighter: fighterFromToken(tokenId, token),
 }));
-export const NIGHT_NUMBER = 9;
 export const STAT_NAMES: StatName[] = ['GRIT', 'PUNCH', 'SWIFT', 'NERVE'];
 export const CORE_MOVES = ['Headbutt', 'Quick Feet', 'Iron Hide'] as const;
 export const TEMPERAMENTS = ['Feisty', 'Cool', 'Wild'] as const;
@@ -88,7 +88,7 @@ export function rivalFor(...excluded: string[]): CastEntry {
 }
 
 export function planForRival(entry: CastEntry): Plan {
-  return { temperament: 'Cool', move: entry.fighter.signature ?? 'Headbutt', risk: 'Even' };
+  return autopilotPlan(entry.fighter);
 }
 
 export function safeStorageGet(key: string): string | null {

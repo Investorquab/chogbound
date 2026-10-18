@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import './theme.css';
 import { SiteFooter, SiteHeader } from '../components/site.js';
 
 export const metadata: Metadata = {

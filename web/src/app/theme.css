@@ -1,0 +1,16 @@
+/* ChogBound theme: the replay screen look (night ink, cream, lime, violet and coral) applied to every page. */
+@font-face{font-family:'Bungee';src:url('/fonts/bungee-latin-400-normal.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Chivo Mono';src:url('/fonts/chivo-mono-latin-500-normal.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:'Chivo Mono';src:url('/fonts/chivo-mono-latin-700-normal.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+:root{--bg:#10131c;--surface:#171b2e;--surface2:#232840;--line:#2e3452;--violet:#8b6cff;--gold:#d7f25a;--ember:#ff6b4a;--text:#f4efe3;--muted:#a9aec4;--green:#7ee0a8;--display:Bungee,Impact,sans-serif;--mono:'Chivo Mono',ui-monospace,monospace}
+.display{font-weight:400;letter-spacing:0;line-height:1.08}
+.surface,.btn,.pill,.tag,.cast-card,.hero-art-frame,.hero-art-label,.board li{border-radius:0}
+.cast-card img,.chog-art,.rival-avatar,.board .board-art{border-radius:0}
+.btn.primary{color:#10131c}
+.tag{background:var(--surface2);color:var(--text)}
+.tag.gold{background:var(--gold);color:#10131c}
+.hero-art-frame{background:linear-gradient(180deg,#171b2e 62%,#232840 62%);border:4px solid var(--gold);box-shadow:6px 6px 0 rgba(0,0,0,.45)}
+.hero-art-label{background:#10131cee;border-color:var(--line)}
+.cast-card[aria-pressed=true]{box-shadow:4px 4px 0 rgba(0,0,0,.45)}
+.share-card{background:var(--surface2);border-radius:0}
+.level-art,.profile-card{border-radius:0}

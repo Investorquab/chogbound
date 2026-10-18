@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { artUrls, loadImage, resolveFirstLoadable } from '../lib/art-url.js';
+import { nightNumber } from '../lib/night.js';
 import Link from 'next/link';
 
 const links = [
@@ -19,7 +20,7 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return <footer className="page-foot">
-    <span>CHOGBOUND / NIGHT 09</span>
+    <span><NightLabel prefix="CHOGBOUND / " /></span>
     <div className="footer-links"><Link href="/arena">ARENA</Link><Link href="/profile">PROFILE</Link></div>
     <span>YOUR TRAITS. YOUR FIGHT.</span>
   </footer>;
@@ -56,3 +57,10 @@ export function StatGrid({ entry }: { entry: import('../lib/cast.js').CastEntry 
 }
 
 
+
+/** Tonight's number, set after the page loads so a statically built page never shows a stale night. */
+export function NightLabel({ prefix = '' }: { prefix?: string }) {
+  const [night, setNight] = useState<number | null>(null);
+  useEffect(() => { setNight(nightNumber()); }, []);
+  return <>{prefix}NIGHT {night === null ? '--' : String(night).padStart(2, '0')}</>;
+}

@@ -1,0 +1,10 @@
+.board{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px}
+.board li{display:grid;grid-template-columns:30px 48px minmax(0,1fr) auto;gap:12px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:0;background:var(--surface)}
+.board li.mine{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.board .rank{font:800 20px var(--display);color:var(--gold);text-align:center}
+.board .board-art{width:48px;height:48px;aspect-ratio:1;object-fit:cover;border-radius:0}
+.board .who{display:grid;min-width:0}
+.board .who strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.board .who small{color:var(--muted);font:12px var(--mono)}
+.board .rec{font:700 13px var(--mono);white-space:nowrap}
+.arena-note{margin-top:12px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;color:var(--muted)}
