@@ -8,8 +8,8 @@ on:
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,6 +26,8 @@ jobs:
         run: npm run test:engine
       - name: Check trait mapping covers every Chog
         run: npm run coverage --workspace=chogbound-sim
+      - name: Run web unit tests
+        run: npm run test:unit --workspace=chogbound-web
       - name: Build web app
         run: npm run build
       - name: Install Playwright Chromium

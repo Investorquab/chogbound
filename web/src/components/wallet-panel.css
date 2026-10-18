@@ -1,0 +1,9 @@
+.wallet-panel{display:grid;gap:12px;margin-bottom:18px}
+.wallet-panel .display{margin:0}
+.wallet-panel .caption{margin:0}
+.wallet-panel .btn{justify-self:start}
+.wallet-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:10px}
+.wallet-error{margin:0;padding:10px 12px;border:1px solid #ff6b4a;border-radius:10px;background:#2a1612;color:#ffc9bd;font-size:14px;line-height:1.4}
+.wallet-panel .cast-grid{align-items:start}
+.wallet-panel .cast-card{height:auto}
+.wallet-panel .cast-card img{height:auto;aspect-ratio:1}

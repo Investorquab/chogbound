@@ -17,8 +17,27 @@ export const TEMPERAMENTS = ['Feisty', 'Cool', 'Wild'] as const;
 export const RISKS = ['Safe', 'Even', 'Gamble'] as const;
 export const DEFAULT_PLAN: Plan = { temperament: 'Feisty', move: 'Headbutt', risk: 'Even' };
 
+/** Chogs a connected wallet owns that are not in the 24 demo cast. Kept in memory and mirrored to storage across pages. */
+const registry = new Map<string, CastEntry>();
+const REGISTRY_KEY = 'chogbound.holder-chogs';
+let hydrated = false;
+function hydrateRegistry() {
+  if (hydrated || typeof window === 'undefined') return;
+  hydrated = true;
+  try { for (const entry of Object.values(JSON.parse(safeStorageGet(REGISTRY_KEY) ?? '{}') as Record<string, CastEntry>)) registry.set(entry.tokenId, entry); } catch { /* Empty-registry fallback. */ }
+}
+export function registerEntries(entries: CastEntry[]): void {
+  hydrateRegistry();
+  for (const entry of entries) registry.set(entry.tokenId, entry);
+  safeStorageSet(REGISTRY_KEY, JSON.stringify(Object.fromEntries(registry)));
+}
+export function clearRegistry(): void { registry.clear(); safeStorageRemove(REGISTRY_KEY); }
 export function byTokenId(tokenId: string | number | null | undefined): CastEntry {
-  return cast.find((entry) => entry.tokenId === String(tokenId)) ?? cast[0];
+  const id = String(tokenId);
+  const demo = cast.find((entry) => entry.tokenId === id);
+  if (demo) return demo;
+  hydrateRegistry();
+  return registry.get(id) ?? cast[0];
 }
 
 export function attributesOf(entry: CastEntry): Record<string, string> {
