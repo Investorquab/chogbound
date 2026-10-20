@@ -1,12 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { createPublicClient, http } from 'viem';
 import { displayName } from 'chogbound-sim/src/stats.js';
 import { MONAD_RPC, monad } from '../lib/chog-chain.js';
 import { WALLET_MESSAGES, WalletError, connectHolder, type Eip1193 } from '../lib/wallet-session.js';
 import { clearHolder, fetchChogEntries, getHolder, saveHolder, shortAddress, type StoredHolder } from '../lib/holder.js';
-import { byTokenId, cast, clearRegistry, registerEntries, safeStorageRemove, safeStorageSet, traitSummary, type CastEntry } from '../lib/cast.js';
+import { byTokenId, cast, clearRegistry, registerEntries, safeStorageRemove, traitSummary, type CastEntry } from '../lib/cast.js';
 import { LAST_FIGHT_KEY, SELECTED_TOKEN_KEY } from '../lib/fight-store.js';
 import { ArtImage } from './site.js';
 import './wallet-panel.css';
@@ -14,8 +13,7 @@ import './wallet-panel.css';
 type Status = 'idle' | 'connecting' | 'loading' | 'ready' | 'error';
 const total = (e: CastEntry) => e.fighter.stats.GRIT + e.fighter.stats.PUNCH + e.fighter.stats.SWIFT + e.fighter.stats.NERVE;
 
-export function WalletPanel() {
-  const router = useRouter();
+export function WalletPanel({ selectedId, onSelect }: { selectedId: string; onSelect: (tokenId: string) => void }) {
   const [status, setStatus] = useState<Status>('idle');
   const [message, setMessage] = useState('');
   const [holder, setHolder] = useState<StoredHolder | null>(null);
@@ -40,7 +38,6 @@ export function WalletPanel() {
     } catch (e) { setMessage(e instanceof WalletError ? e.message : WALLET_MESSAGES.failed); setStatus('error'); }
   }
   function disconnect() { clearHolder(); clearRegistry(); safeStorageRemove(SELECTED_TOKEN_KEY); safeStorageRemove(LAST_FIGHT_KEY); setHolder(null); setOwned([]); setStatus('idle'); setMessage(''); }
-  function play(entry: CastEntry) { safeStorageSet(SELECTED_TOKEN_KEY, entry.tokenId); safeStorageRemove(LAST_FIGHT_KEY); router.push('/coach'); }
 
   const busy = status === 'connecting' || status === 'loading';
   return <section className="surface panel wallet-panel" aria-label="Play with your own Chog" data-testid="wallet-panel">
@@ -53,8 +50,8 @@ export function WalletPanel() {
       <div className="wallet-bar"><span className="tag gold">CONNECTED {shortAddress(holder.address)}</span><button type="button" className="btn secondary" onClick={disconnect}>DISCONNECT</button></div>
       {owned.length === 0 ? <p className="caption" data-testid="wallet-empty">This wallet holds no Chogs. Pick a demo Chog below to play as a guest.</p> : <>
         {!holder.complete && <p className="caption" role="status">We could not read every Chog right now, so this list may be missing some. Disconnect and connect again to retry.</p>}
-        <p className="caption">{owned.length === 1 ? 'You own 1 Chog.' : `You own ${owned.length} Chogs.`} Choose one to coach.</p>
-        <div className="cast-grid" data-testid="owned-chogs">{owned.map((entry) => <button type="button" key={entry.tokenId} className="cast-card" onClick={() => play(entry)} aria-label={`Play with ${displayName(entry.metadata.name)}`}><ArtImage tokenId={entry.tokenId} name={entry.metadata.name} /><strong>{displayName(entry.metadata.name)}</strong><span>{entry.fighter.tier} / {total(entry)} total / {traitSummary(entry)}</span></button>)}</div>
+        <p className="caption">{owned.length === 1 ? 'You own 1 Chog.' : `You own ${owned.length} Chogs.`} Tap one, then press PLAY below.</p>
+        <div className="cast-grid" data-testid="owned-chogs">{owned.map((entry) => <button type="button" key={entry.tokenId} className="cast-card" aria-pressed={entry.tokenId === selectedId} onClick={() => onSelect(entry.tokenId)} aria-label={`Choose ${displayName(entry.metadata.name)}`}><ArtImage tokenId={entry.tokenId} name={entry.metadata.name} /><strong>{displayName(entry.metadata.name)}</strong><span>{entry.fighter.tier} / {total(entry)} total / {traitSummary(entry)}</span></button>)}</div>
       </>}
     </div>}
     <p className="caption">No Chog? Play as a guest with one of the {cast.length} demo Chogs below.</p>

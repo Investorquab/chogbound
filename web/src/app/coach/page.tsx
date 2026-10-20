@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ArtImage, StatGrid } from '../../components/site.js';
 import { byTokenId, cast, CORE_MOVES, DEFAULT_PLAN, rivalFor, safeStorageGet, safeStorageSet, statBreakdown, traitRows, traitSummary } from '../../lib/cast.js';
+import { LaunchButton } from '../../components/launch-button.js';
 import { LOCKED_PLAN_KEY, SELECTED_TOKEN_KEY, runComparison } from '../../lib/fight-store.js';
 import type { Move, Plan, Risk, Temperament } from 'chogbound-sim/src/types.js';
 
@@ -78,6 +79,7 @@ export default function CoachPage() {
           <div className="input-section"><div className="input-title"><h2>MOVE</h2></div><div className="choice-group move-group">{moveOptions.map((value) => <button key={value} type="button" aria-pressed={plan.move === value} disabled={locked} className="choice" onClick={() => updatePlan('move', value)}><strong>{value}</strong><span>{moveInfo[value] ?? 'Signature move.'}</span></button>)}</div></div>
           <div className="input-section"><div className="input-title"><h2>RISK</h2></div><div className="choice-group">{(['Safe', 'Even', 'Gamble'] as const).map((value) => <button key={value} type="button" aria-pressed={plan.risk === value} disabled={locked} className="choice" onClick={() => updatePlan('risk', value)}><strong>{value}</strong><span>{riskInfo[value]}</span></button>)}</div></div>
           <div className="lock-state" aria-live="polite">{locked ? 'Plan locked for tonight.' : 'Plan ready to lock.'}</div><div className="hero-actions"><button className="btn primary" type="button" onClick={lockPlan} disabled={locked}>LOCK PLAN</button><button className="btn secondary" type="button" onClick={editPlan} disabled={!locked}>EDIT PLAN</button></div>
+          <LaunchButton className="btn primary play-big play-wide" plan={plan} beforeLaunch={lockPlan}>PLAY TONIGHT&apos;S FIGHT</LaunchButton>
         </section>
         <section className="surface panel compare-panel"><div className="eyebrow">SWAP TEST PROOF</div><h2 className="display panel-title">SAME PLAN. DIFFERENT CHOG.</h2><p className="caption">Choose a second Chog to compare traits and stat sources. Both columns use the same current plan against the same rival.</p><label className="eyebrow" htmlFor="compare-select">SECOND CHOG</label><select id="compare-select" value={compareId} onChange={(event) => { setCompareId(event.target.value); setResults(null); }}>{cast.filter((entry) => entry.tokenId !== selectedId).map((entry) => <option key={entry.tokenId} value={entry.tokenId}>{entry.metadata.name}</option>)}</select>
           <div className="compare-pair"><div className="compare-fighter"><ArtImage tokenId={selected.tokenId} name={selected.metadata.name} /><strong>{selected.metadata.name}</strong><StatGrid entry={selected} /></div><div className="compare-vs">VS</div><div className="compare-fighter"><ArtImage tokenId={compared.tokenId} name={compared.metadata.name} /><strong>{compared.metadata.name}</strong><StatGrid entry={compared} /></div></div>

@@ -1,0 +1,11 @@
+/* A big PLAY button that is always on screen once a Chog is chosen. */
+.pick-page{padding-bottom:120px}
+.play-bar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:#10131cf2;border-top:4px solid var(--gold);padding:10px 16px calc(10px + env(safe-area-inset-bottom));backdrop-filter:blur(6px)}
+.play-bar-inner{max-width:1160px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.play-bar-art{width:52px;height:52px;aspect-ratio:1;object-fit:cover;border:2px solid var(--gold);flex:none}
+.play-bar-who{display:grid;min-width:0;flex:1}
+.play-bar-who small{font:700 10px var(--mono);letter-spacing:2px;color:var(--muted)}
+.play-bar-who strong{font:400 16px var(--display);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.play-big{min-height:56px;padding:0 28px;font:400 20px var(--display);letter-spacing:1px}
+.play-bar-coach{min-height:56px;display:inline-flex;align-items:center;font-size:12px}
+@media(max-width:560px){.play-bar-coach{display:none}.play-big{padding:0 22px}}

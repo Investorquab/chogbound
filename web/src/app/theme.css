@@ -14,3 +14,4 @@
 .cast-card[aria-pressed=true]{box-shadow:4px 4px 0 rgba(0,0,0,.45)}
 .share-card{background:var(--surface2);border-radius:0}
 .level-art,.profile-card{border-radius:0}
+.play-wide{width:100%;margin-top:12px}

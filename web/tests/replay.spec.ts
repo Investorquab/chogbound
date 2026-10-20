@@ -122,7 +122,49 @@ test.describe('game sounds', () => {
     await expect(page.getByTestId('stage-result')).toBeVisible();
     // click (1) + jingle (win 9 or lose 4); no per-event sounds are queued for the events that were skipped.
     await expect.poll(() => nodes(page)).toBeGreaterThanOrEqual(5);
-    expect(await nodes(page)).toBeLessThanOrEqual(12);
+    expect(await nodes(page)).toBeLessThanOrEqual(20);
+  });
+
+  // Between 0.3 and 1.0 seconds after PLAY no fight event has happened yet (the first comes at 1.4 seconds),
+  // so anything created in that window is the music loop.
+  test('music plays while the fight runs and stops when paused', async ({ page }) => {
+    await page.goto('/replay');
+    await page.getByRole('button', { name: 'PLAY', exact: true }).click();
+    await page.waitForTimeout(300);
+    const a = await nodes(page);
+    await page.waitForTimeout(700);
+    expect((await nodes(page)) - a).toBeGreaterThanOrEqual(8);
+    await page.getByRole('button', { name: 'PAUSE', exact: true }).click();
+    await page.waitForTimeout(500);
+    const paused = await nodes(page);
+    await page.waitForTimeout(800);
+    expect(await nodes(page)).toBe(paused);
+  });
+
+  test('turning Music off silences the loop but keeps the start sound', async ({ page }) => {
+    await page.goto('/replay');
+    await page.getByRole('button', { name: 'Music on' }).click();
+    await expect(page.getByRole('button', { name: 'Music off' })).toBeVisible();
+    const before = await nodes(page);
+    await page.getByRole('button', { name: 'PLAY', exact: true }).click();
+    await page.waitForTimeout(300);
+    const a = await nodes(page);
+    expect(a - before).toBeGreaterThan(0);
+    await page.waitForTimeout(700);
+    expect(await nodes(page)).toBe(a);
+  });
+
+  test('the Voice toggle removes the fighter voices from an event and keeps the effects', async ({ page }) => {
+    const afterFirstEvent = async () => { await page.goto('/replay'); const start = await nodes(page); await page.getByRole('button', { name: 'NEXT EVENT' }).click(); await expect.poll(() => nodes(page)).toBeGreaterThan(start); await page.waitForTimeout(200); return (await nodes(page)) - start; };
+    const withVoice = await afterFirstEvent();
+    await page.getByRole('button', { name: 'Voice on' }).click();
+    await page.reload();
+    const start = await nodes(page);
+    await page.getByRole('button', { name: 'NEXT EVENT' }).click();
+    await page.waitForTimeout(300);
+    const withoutVoice = (await nodes(page)) - start;
+    expect(withoutVoice).toBeGreaterThan(0);
+    expect(withoutVoice).toBeLessThan(withVoice);
   });
 
   test('a muted choice is remembered after a reload', async ({ page }) => {

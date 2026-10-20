@@ -15,10 +15,12 @@ test.describe('holder flow with a pretend wallet and a pretend Monad node', () =
     await expect(owned).toContainText('CHOG #1769');
     await expect(owned).toContainText('CHOG #1290 / Krown');
     expect(await owned.innerText()).not.toContain('\u2014');
-    await owned.getByRole('button', { name: 'Play with CHOG #1769' }).click();
-    await expect(page).toHaveURL(/\/coach/);
-    await expect(page.locator('main')).toContainText('CHOG #1769');
-    await page.goto('/replay');
+    await owned.getByRole('button', { name: 'Choose CHOG #1769' }).click();
+    await expect(owned.getByRole('button', { name: 'Choose CHOG #1769' })).toHaveAttribute('aria-pressed', 'true');
+    const bar = page.getByTestId('play-bar');
+    await expect(bar).toContainText('CHOG #1769');
+    await bar.getByRole('button', { name: 'PLAY', exact: true }).click();
+    await expect(page).toHaveURL(/\/replay/);
     await expect(page.locator('.rp-eyebrow')).toContainText('YOUR CHOG');
     await expect(page.locator('.rp-hp.a .rp-name')).toHaveText('CHOG #1769');
     await expect(page.locator('.rp-score > div').first().locator('strong')).toHaveText(String(TOKEN_308_STAT_TOTAL));

@@ -8,15 +8,12 @@ import { renderFightEnding } from 'chogbound-sim/src/narration.js';
 import { captionFor } from '../../lib/caption.js';
 import { displayName } from 'chogbound-sim/src/stats.js';
 import { humanizeProcIds, procLabel } from '../../lib/proc-labels.js';
-import { VOICE_STORAGE_KEY, isSpeechSupported, speak, stopSpeaking } from '../../lib/voice.js';
-import { SFX_STORAGE_KEY, sfx } from '../../lib/sfx.js';
+import { AUDIO_KEYS, audio, type Voices } from '../../lib/audio.js';
+import { eventKind, isKnockout } from '../../lib/event-kind.js';
+import { musicLevelForHp } from '../../lib/music.js';
 import type { FightEvent, Side } from 'chogbound-sim/src/types.js';
 import './replay.css';
 
-function isKnockout(event: FightEvent) {
-  const target: Side = event.actor === 'a' ? 'b' : 'a';
-  return event.damage > 0 && event.hp_after[target] === 0;
-}
 type Burst = { kind: 'crit' | 'hit' | 'miss' | 'dodge' | 'heal' | 'burn' | 'ko'; top: string; bottom: string };
 function burstFor(event: FightEvent): Burst {
   if (isKnockout(event)) return { kind: 'ko', top: 'KO', bottom: `-${event.damage}` };
@@ -27,44 +24,33 @@ function burstFor(event: FightEvent): Burst {
   if (event.outcome === 'dodge') return { kind: 'dodge', top: 'DODGE', bottom: '' };
   return { kind: 'miss', top: 'MISS', bottom: '' };
 }
-/** Game sound for one event: a whoosh then the impact timed to the lunge animation, or a single sound for the other outcomes. */
-function playEventSfx(event: FightEvent) {
-  const kind = burstFor(event).kind;
-  if (kind === 'hit' || kind === 'crit' || kind === 'ko') { sfx.play('whoosh'); sfx.play(kind, 0.17); }
-  else sfx.play(kind);
-}
 const tickerOutcome = (event: FightEvent) => { const b = burstFor(event); return b.bottom ? `${b.top} ${b.bottom}` : b.top; };
 
 export default function ReplayPage() {
   const [fight, setFight] = useState<StoredFight | null>(null);
   const [cursor, setCursor] = useState(0);
   const [playing, setPlaying] = useState(false);
+  const [soundOn, setSoundOn] = useState(true);
+  const [musicOn, setMusicOn] = useState(true);
   const [voiceOn, setVoiceOn] = useState(true);
-  const [voicesReady, setVoicesReady] = useState(false);
-  const [sfxOn, setSfxOn] = useState(true);
   const previousCursor = useRef(0);
   useEffect(() => {
     void (async () => {
       const stored = getStoredFight() ?? await startTonight(safeStorageGet('chogbound.selected-token') ?? '640');
       setFight(stored);
-      if (new URLSearchParams(window.location.search).get('autoplay') === '1') { setPlaying(true); sfx.play('start'); }
+      const flags = { master: safeStorageGet(AUDIO_KEYS.master) !== 'off', voice: safeStorageGet(AUDIO_KEYS.voice) !== 'off', music: safeStorageGet(AUDIO_KEYS.music) !== 'off' };
+      setSoundOn(flags.master); setVoiceOn(flags.voice); setMusicOn(flags.music); audio.setFlags(flags);
+      if (new URLSearchParams(window.location.search).get('autoplay') === '1') { setPlaying(true); audio.playStart({ a: byTokenId(stored.youId).fighter.voiceClass, b: byTokenId(stored.rivalId).fighter.voiceClass }); }
     })();
-    setVoiceOn(safeStorageGet(VOICE_STORAGE_KEY) !== 'off');
-    const sound = safeStorageGet(SFX_STORAGE_KEY) !== 'off';
-    setSfxOn(sound); sfx.enabled = sound;
-    if (isSpeechSupported()) {
-      const update = () => setVoicesReady(window.speechSynthesis.getVoices().length > 0);
-      update(); window.speechSynthesis.addEventListener('voiceschanged', update);
-      return () => { window.speechSynthesis.removeEventListener('voiceschanged', update); stopSpeaking(); };
-    }
+    return () => audio.stopMusic(0.1);
   }, []);
   const events = fight?.result.events ?? [];
   const you = fight ? byTokenId(fight.youId) : null;
   const rival = fight ? byTokenId(fight.rivalId) : null;
+  const voices: Voices | null = you && rival ? { a: you.fighter.voiceClass, b: rival.fighter.voiceClass } : null;
   const shownEvent = cursor > 0 ? events[cursor - 1] ?? null : null;
   const hp = shownEvent?.hp_after ?? { a: 100, b: 100 };
   const finished = Boolean(fight && cursor >= events.length && events.length > 0);
-  const voiceActive = voiceOn && voicesReady;
   const caption = useMemo(() => {
     if (!fight || !shownEvent) return 'The fight is ready. Press play.';
     const actor = shownEvent.actor === 'a' ? you : rival;
@@ -74,32 +60,34 @@ export default function ReplayPage() {
   useEffect(() => {
     if (!playing || events.length === 0) return;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const interval = window.setInterval(() => setCursor((current) => Math.min(events.length, current + 1)), voiceActive ? 3200 : reduced ? 1400 : 1100);
+    const interval = window.setInterval(() => setCursor((current) => Math.min(events.length, current + 1)), reduced ? 1800 : 1400);
     return () => window.clearInterval(interval);
-  }, [playing, events.length, voiceActive]);
+  }, [playing, events.length]);
   useEffect(() => { if (finished) setPlaying(false); }, [finished]);
-  useEffect(() => {
-    if (!voiceActive || !fight || !shownEvent) return;
-    const actor = shownEvent.actor === 'a' ? you : rival;
-    const kind = burstFor(shownEvent).kind;
-    if (actor) speak(caption, actor.fighter.voiceClass, kind === 'crit' || kind === 'ko');
-  }, [cursor]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Sound for each event. A jump of more than one event (skip) plays only the result, never a burst of stale sounds.
   useEffect(() => {
     const before = previousCursor.current; previousCursor.current = cursor;
-    if (cursor === 0 || cursor <= before || !shownEvent) return;
-    if (cursor - before === 1) playEventSfx(shownEvent);
+    if (cursor === 0 || cursor <= before || !shownEvent || !voices) return;
+    audio.setMusicLevel(musicLevelForHp(Math.min(shownEvent.hp_after.a, shownEvent.hp_after.b)));
+    if (cursor - before === 1) audio.playEvent(shownEvent, voices);
   }, [cursor]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Music runs while the fight plays and fades when it pauses or ends.
+  useEffect(() => { if (playing) audio.startMusic(musicLevelForHp(Math.min(hp.a, hp.b))); else audio.stopMusic(); }, [playing]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (!finished || !fight) return;
-    sfx.play(fight.result.summary.winner === 'a' ? 'win' : 'lose', 1.0);
+    if (!finished || !fight || !voices) return;
+    audio.playResult(fight.result.summary.winner === 'a', voices, 1.0);
   }, [finished]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  function restart() { sfx.play('click'); setPlaying(false); setCursor(0); stopSpeaking(); }
-  function next() { sfx.play('click'); setPlaying(false); setCursor((current) => Math.min(events.length, current + 1)); }
-  function skip() { sfx.play('click'); setPlaying(false); setCursor(events.length); stopSpeaking(); }
-  function togglePlay() { if (playing) { sfx.play('click'); setPlaying(false); return; } if (finished) setCursor(0); sfx.play(cursor === 0 || finished ? 'start' : 'click'); setPlaying(true); }
-  function toggleSfx() { const nextValue = !sfxOn; setSfxOn(nextValue); sfx.enabled = nextValue; safeStorageSet(SFX_STORAGE_KEY, nextValue ? 'on' : 'off'); if (nextValue) sfx.play('click'); }
-  function toggleVoice() { const nextValue = !voiceOn; setVoiceOn(nextValue); safeStorageSet(VOICE_STORAGE_KEY, nextValue ? 'on' : 'off'); if (!nextValue) stopSpeaking(); }
+  function restart() { audio.click(); setPlaying(false); setCursor(0); }
+  function next() { audio.click(); setPlaying(false); setCursor((current) => Math.min(events.length, current + 1)); }
+  function skip() { audio.click(); setPlaying(false); setCursor(events.length); }
+  function togglePlay() {
+    if (playing) { audio.click(); setPlaying(false); return; }
+    if (finished) setCursor(0);
+    if ((cursor === 0 || finished) && voices) audio.playStart(voices); else audio.click();
+    setPlaying(true);
+  }
+  function toggle(key: 'master' | 'voice' | 'music', value: boolean, set: (v: boolean) => void) { set(value); audio.setFlags({ [key]: value }); safeStorageSet(AUDIO_KEYS[key], value ? 'on' : 'off'); if (value) audio.click(); }
 
   if (!fight || !you || !rival) return <main className="rp"><div className="rp-loading">Preparing tonight&apos;s fight...</div></main>;
   const summary = fight.result.summary;
@@ -120,12 +108,17 @@ export default function ReplayPage() {
   return <main className="rp">
     <header className="rp-head">
       <div><div className="rp-eyebrow">NIGHT {String(fight.night).padStart(2, '0')} / {isHolderToken(fight.youId) ? 'YOUR CHOG' : 'GUEST REPLAY'}</div><h1 className="rp-title">THE LAST STAND</h1></div>
-<div className="rp-tools"><button type="button" className={`rp-voice ${sfxOn ? 'on' : ''}`} aria-label={sfxOn ? 'Sound on' : 'Sound off'} aria-pressed={sfxOn} onClick={toggleSfx}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" />{sfxOn ? <><path d="M16.5 8.5a5 5 0 0 1 0 7" /><path d="M19 6a8.5 8.5 0 0 1 0 12" /></> : <path d="M17 9l5 6M22 9l-5 6" />}</svg>
+<div className="rp-tools">
+        <button type="button" className={`rp-voice ${soundOn ? 'on' : ''}`} aria-label={soundOn ? 'Sound on' : 'Sound off'} aria-pressed={soundOn} onClick={() => toggle('master', !soundOn, setSoundOn)}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" />{soundOn ? <><path d="M16.5 8.5a5 5 0 0 1 0 7" /><path d="M19 6a8.5 8.5 0 0 1 0 12" /></> : <path d="M17 9l5 6M22 9l-5 6" />}</svg>
         </button>
-      {isSpeechSupported() && <button type="button" className={`rp-voice ${voiceOn ? 'on' : ''}`} aria-label={voiceOn ? 'Voice on' : 'Voice off'} aria-pressed={voiceOn} onClick={toggleVoice}>
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4V5z" />{voiceOn ? <><path d="M8 9h8" /><path d="M8 12h5" /></> : <path d="M9 8l6 5M15 8l-6 5" />}</svg>
-      </button>}</div>
+        <button type="button" className={`rp-voice ${musicOn ? 'on' : ''}`} aria-label={musicOn ? 'Music on' : 'Music off'} aria-pressed={musicOn} onClick={() => toggle('music', !musicOn, setMusicOn)}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 18V6l10-2v12" /><circle cx="6.5" cy="18" r="2.5" /><circle cx="16.5" cy="16" r="2.5" />{!musicOn && <path d="M3 3l18 18" />}</svg>
+        </button>
+        <button type="button" className={`rp-voice ${voiceOn ? 'on' : ''}`} aria-label={voiceOn ? 'Voice on' : 'Voice off'} aria-pressed={voiceOn} onClick={() => toggle('voice', !voiceOn, setVoiceOn)}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4V5z" />{voiceOn ? <><path d="M8 9h8" /><path d="M8 12h5" /></> : <path d="M3 3l18 18" />}</svg>
+        </button>
+      </div>
     </header>
 
     <div className="rp-grid">
